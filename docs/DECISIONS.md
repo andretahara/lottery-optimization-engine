@@ -57,3 +57,27 @@ revertem antigas referenciam o ADR superado.
 - **Contexto**: Empacotamento limpo e import isolado.
 - **Decisao**: `src/lottery_engine/`, `pyproject.toml` (PEP 621), testes em `tests/` com pytest.
 - **Consequencia**: Evita import acidental do cwd; instalavel via `pip install -e .`.
+
+## ADR-009 - Conjunto documental como memoria duravel
+- **Contexto**: Sessoes podem sofrer /clear ou crash; precisa sobreviver sem perda de contexto.
+- **Decisao**: `CLAUDE.md` (operacional, relido toda sessao) + `docs/{SPEC,ARCHITECTURE,MATH_MODEL,ROADMAP,DECISIONS,TESTING}.md`.
+  CLAUDE.md curto e linka os detalhados.
+- **Consequencia**: Retomada barata e consistente. Custo: manter docs em sincronia com o codigo
+  (gate de bloco exige atualizar ROADMAP/DECISIONS).
+
+## ADR-010 - Garantia de wheeling provada por forca bruta
+- **Contexto**: Covering designs vem de heuristica; afirmar garantia sem prova e perigoso.
+- **Decisao**: Em casos pequenos, enumerar todos os sorteios possiveis e verificar a garantia 100%.
+  Heuristica gera; teste de forca bruta PROVA.
+- **Consequencia**: Confianca real na garantia para tamanhos testaveis; extrapolacao para tamanhos
+  grandes documentada como propriedade do algoritmo, nao do teste.
+
+## ADR-011 - `combinatorics` como modulo proprio
+- **Contexto**: Varios modulos precisam de C(n,k), iteracao de combinacoes e k-subconjuntos.
+- **Decisao**: Centralizar em `combinatorics.py` puro, reusado por spec/generate/wheels/metrics.
+- **Consequencia**: Sem duplicacao; ponto unico de otimizacao/teste da combinatoria.
+
+## ADR-012 - Determinismo via RNG com seed
+- **Contexto**: Testes de geracao e otimizacao precisam ser reproduziveis.
+- **Decisao**: Toda aleatoriedade passa por `rng.Rng(seed)`. Mesma seed => mesma saida.
+- **Consequencia**: CI determinista, debugging viavel. Exige disciplina: nenhum `random` solto no nucleo.
