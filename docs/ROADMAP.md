@@ -38,7 +38,7 @@ tests/  (um test_<modulo> por modulo)
 - [x] **Bloco 0.1 - Base documental**: `CLAUDE.md` (memoria operacional, 13 regras + comandos),
       `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/MATH_MODEL.md`, `docs/ROADMAP.md`,
       `docs/DECISIONS.md` (ADR-001..012), `docs/TESTING.md`. Sem codigo de engine.
-- [ ] **Bloco 1 - Scaffold + Spec + Registry**: `pyproject.toml`, `src/` layout, `disclaimer.py`,
+- [x] **Bloco 1 - Scaffold + Spec + Registry**: `pyproject.toml`, `src/` layout, `disclaimer.py`,
       `combinatorics.py`, `LotterySpec`+validacao, presets das 8 loterias (precos None), testes verdes.
 - [ ] **Bloco 2 - Geracao justa + orcamento**: `rng.py` (seed reproducivel), `generate.py`
       (jogos uniformes sem vies; respeita marks e orcamento), testes (uniformidade + repro).
@@ -57,4 +57,4 @@ tests/  (um test_<modulo> por modulo)
 
 ## Proximo passo seguro
 
-Bloco 1 (scaffold + spec + registry). Aguardando instrucao do usuario.
+Bloco 2 (geracao justa + orcamento): rng.py + generate.py. Aguardando instrucao do usuario.
