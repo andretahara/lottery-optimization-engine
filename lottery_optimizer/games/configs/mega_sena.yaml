@@ -1,10 +1,9 @@
-slug: mega-sena
+game_id: mega-sena
 name: Mega-Sena
-pool: 60
+universe_min: 1
+universe_max: 60
 draw_size: 6
-min_marks: 6
-max_marks: 15
-number_start: 1
-prize_tiers: [4, 5, 6]
+allowed_ticket_sizes: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 price_table: null
-extra_rules: {}
+prize_tiers: [4, 5, 6]
+notes: null

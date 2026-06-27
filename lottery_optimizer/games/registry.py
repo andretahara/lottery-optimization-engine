@@ -21,21 +21,23 @@ def _load_all() -> dict[str, GameSpec]:
     for path in sorted(_CONFIG_DIR.glob("*.yaml")):
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
         spec = GameSpec(**data)
-        if spec.slug in specs:
-            raise ValueError(f"slug duplicado '{spec.slug}' em {path.name}")
-        specs[spec.slug] = spec
+        if spec.game_id in specs:
+            raise ValueError(f"game_id duplicado '{spec.game_id}' em {path.name}")
+        specs[spec.game_id] = spec
     return specs
 
 
 def available() -> tuple[str, ...]:
-    """Slugs registrados, ordenados."""
+    """game_ids registrados, ordenados."""
     return tuple(sorted(_load_all()))
 
 
-def get(slug: str) -> GameSpec:
-    """GameSpec do slug. KeyError se desconhecido."""
+def get(game_id: str) -> GameSpec:
+    """GameSpec do game_id. KeyError se desconhecido."""
     specs = _load_all()
     try:
-        return specs[slug]
+        return specs[game_id]
     except KeyError:
-        raise KeyError(f"loteria '{slug}' desconhecida; disponiveis: {', '.join(available())}") from None
+        raise KeyError(
+            f"loteria '{game_id}' desconhecida; disponiveis: {', '.join(available())}"
+        ) from None

@@ -1,11 +1,9 @@
-slug: timemania
+game_id: timemania
 name: Timemania
-pool: 80
+universe_min: 1
+universe_max: 80
 draw_size: 7
-min_marks: 10
-max_marks: 10
-number_start: 1
-prize_tiers: [3, 4, 5, 6, 7]
+allowed_ticket_sizes: [10]
 price_table: null
-extra_rules:
-  team_of_heart: true
+prize_tiers: [3, 4, 5, 6, 7]
+notes: "Marca 10 dezenas; Time do Coracao premiado a parte."

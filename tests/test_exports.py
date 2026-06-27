@@ -8,12 +8,14 @@ from lottery_optimizer.export import csv_exporter, excel_exporter, report_export
 
 
 def spec():
-    return GameSpec(slug="mega-sena", name="Mega-Sena", pool=60, draw_size=6,
-                    min_marks=6, max_marks=15, prize_tiers=(4, 5, 6))
+    return GameSpec(game_id="mega-sena", name="Mega-Sena", universe_min=1, universe_max=60,
+                    draw_size=6, allowed_ticket_sizes=(6,))
 
 
 def portfolio():
-    return Portfolio([Ticket(numbers=(1, 2, 3, 4, 5, 6)), Ticket(numbers=(7, 8, 9, 10, 11, 12))])
+    s = spec()
+    return Portfolio(s, [Ticket(numbers=(1, 2, 3, 4, 5, 6)),
+                         Ticket(numbers=(7, 8, 9, 10, 11, 12))])
 
 
 def test_csv_export_roundtrip(tmp_path):

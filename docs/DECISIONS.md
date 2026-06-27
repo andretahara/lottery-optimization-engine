@@ -112,3 +112,25 @@ revertem antigas referenciam o ADR superado.
 - **Decisao**: Distancia vira distancia de Jaccard normalizada |A^B|/|AvB| em [0,1]. Todas as
   metricas (coverage, distance, balance) ficam em [0,1] -> score em [0,1].
 - **Consequencia**: Score interpretavel e limitado. Bug pego por teste (CLAUDE.md §7-8).
+
+## ADR-017 - GameSpec por universo + allowed_ticket_sizes (supera ADR de campos do Bloco 1)
+- **Contexto**: Bloco do nucleo pediu API explicita: game_id, universe_min/max, draw_size,
+  allowed_ticket_sizes, price_table, prize_tiers, notes.
+- **Decisao**: Reescrever GameSpec nesses campos. `allowed_ticket_sizes` (conjunto explicito)
+  substitui min/max_marks - modela melhor jogos de tamanho fixo (Lotomania=50, Timemania=10)
+  e faixas (Mega 6..15). `universe_min/max` substitui pool+number_start (Lotomania 0..99 natural).
+- **Consequencia**: API mais expressiva e generica. Quebra a API do Bloco 1; YAML/registry/
+  scripts/testes atualizados. Helpers derivados (`pool`, `min/max_ticket_size`) preservam ergonomia.
+
+## ADR-018 - Cobertura com modos exact/streaming/sampled + trava de memoria
+- **Contexto**: K-subsets de jogos grandes explodem (Lotomania C(50,20)~4.7e13). Exato e inviavel.
+- **Decisao**: `CombinationCoverage` oferece exact (com `DEFAULT_EXACT_CAP`), streaming (lazy) e
+  sampled (Monte Carlo via SeededRng). Probabilidade do premio principal usa cobertura UNICA.
+- **Consequencia**: Escala para qualquer loteria sem estourar memoria; estimativas reproduziveis
+  por seed. Custo: resultado amostral e aproximado (documentado, tolerancia em teste).
+
+## ADR-019 - Custo oficial vs estimativa explicitamente marcada
+- **Contexto**: Sem preco oficial para um tamanho, e tentador "preencher" - mas seria inventar.
+- **Decisao**: `CostModel` retorna `CostResult(amount, is_estimate)`. Oficial so quando o tamanho
+  esta na price_table; senao estima `base * C(T,K)` com `is_estimate=True`; sem base nem tabela, erro.
+- **Consequencia**: Usuario sempre sabe o que e preco real vs estimativa. Reforca ADR-006.

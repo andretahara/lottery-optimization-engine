@@ -2,58 +2,42 @@
 
 Legenda: `[x]` feito  `[~]` em andamento  `[ ]` pendente
 
-Atualizar a cada unidade de trabalho concluida. Commit local em cada checkpoint.
-
 ---
 
 ## Objetivo
 
-Engine generica para loterias combinatorias. Loteria como configuracao (`LotterySpec`/preset),
-nunca hardcode. Otimiza COBERTURA combinatoria e qualidade de carteira (diversidade,
-sobreposicao, balanco, distancia, orcamento). NAO preve sorteio, NAO altera probabilidade
-individual. Ver `CLAUDE.md` (regra fundamental) e `docs/MATH_MODEL.md`.
+Engine generica para loterias combinatorias. Loteria como configuracao (`GameSpec`/YAML),
+nunca hardcode. Otimiza COBERTURA combinatoria e qualidade de carteira. NAO preve sorteio,
+NAO altera probabilidade individual. Ver `CLAUDE.md` e `docs/MATH_MODEL.md`.
 
-Loterias-alvo: Quina, Quina de Sao Joao, Mega-Sena, Mega-Sena da Virada, Lotofacil,
-Lotomania, Timemania, Dupla Sena, + configuraveis futuras.
+Loterias-alvo: Quina, Mega-Sena, Lotofacil, Lotomania, Timemania, Dupla Sena (+ variantes
+especiais e novas via YAML).
 
-## Stack (ver ADRs em docs/DECISIONS.md)
+## Stack
 
-Python 3.12, layout `src/`, build `pyproject.toml`, testes `pytest` (+ hypothesis), lint `ruff`.
-Nucleo importavel (lib) + CLI fino. Deps minimas: stdlib no nucleo, `numpy` p/ metricas,
-`openpyxl` p/ Excel. Sem rede.
-
-## Arquitetura (modulos) - detalhe em docs/ARCHITECTURE.md
-
-```
-src/lottery_engine/
-  disclaimer.py     combinatorics.py   spec.py        registry.py
-  rng.py            generate.py        wheels.py      metrics.py
-  portfolio.py      export.py          cli.py         __init__.py
-tests/  (um test_<modulo> por modulo)
-```
+Python 3.11+, pacote flat `lottery_optimizer`, `pytest`(+hypothesis), `ruff`. Nucleo
+importavel + CLI fino (typer). pydantic no dominio. Deps: numpy/pandas/pydantic/pyyaml/
+openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 
 ## Fases incrementais (Blocos)
 
-- [x] **Bloco 0 - Fundacao**: repo, remote, `.gitignore`, commit inicial.
-- [x] **Bloco 0.1 - Base documental**: `CLAUDE.md` (memoria operacional, 13 regras + comandos),
-      `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/MATH_MODEL.md`, `docs/ROADMAP.md`,
-      `docs/DECISIONS.md` (ADR-001..012), `docs/TESTING.md`. Sem codigo de engine.
-- [x] **Bloco 1 - Esqueleto profissional + Spec + Registry**: pacote `lottery_optimizer` (core/metrics/algorithms/games/export/cli/utils), GameSpec/Ticket/Portfolio (pydantic), combinatoria, probabilidade, custo, metricas reais; algoritmos/Excel/charts/cli-generate como stubs; 6 YAML de loteria; Makefile, scripts de exemplo. 49 testes verdes, ruff limpo.
-- [ ] **Bloco 2 - Geracao justa + orcamento**: `rng.py` (seed reproducivel), `generate.py`
-      (jogos uniformes sem vies; respeita marks e orcamento), testes (uniformidade + repro).
-- [ ] **Bloco 3 - Metricas de carteira**: `metrics.py` (cobertura pares/trincas, sobreposicao,
-      balanco de frequencia, distancia media, redundancia), testes.
-- [ ] **Bloco 4 - Wheeling / covering designs**: `wheels.py` (garantia K-de-M verificavel,
-      jogos abreviados via greedy), teste de forca bruta que PROVA a garantia em casos pequenos.
-- [ ] **Bloco 5 - Otimizacao de carteira**: `portfolio.py` (greedy + busca local, funcao-objetivo
-      de metrics sob orcamento), testes comparando vs baseline aleatoria.
-- [ ] **Bloco 6 - Export + disclaimer**: `export.py` (CSV, Excel, relatorio), disclaimer em toda
-      saida; testes de presenca do aviso e integridade.
-- [ ] **Bloco 7 - CLI + ponta-a-ponta**: `cli.py` (loteria, orcamento, modo, seed, export),
-      demo reproducivel, testes de CLI.
-- [ ] **Bloco 8 - Auditoria + performance + docs**: stress em loterias grandes (Lotofacil/Lotomania),
-      edge cases, README de uso, auditoria critica anti-previsao.
+- [x] **Bloco 0 / 0.1 - Fundacao + base documental**: repo, CLAUDE.md (memoria operacional),
+      SPEC/ARCHITECTURE/MATH_MODEL/TESTING/ROADMAP/DECISIONS.
+- [x] **Bloco 1 - Esqueleto profissional**: pacote `lottery_optimizer` (core/metrics/algorithms/
+      games/export/cli/utils), stubs limpos, 6 YAML, Makefile, scripts. Metricas intra-carteira reais.
+- [x] **Bloco 2 - Nucleo matematico generico**: `GameSpec` (game_id/universe/allowed_ticket_sizes),
+      `Ticket`/`Portfolio` spec-aware, `CostModel` (oficial vs estimativa marcada), `ProbabilityModel`
+      (premio principal = K-subsets UNICOS / C(N,K); faixas inferiores hipergeometricas),
+      `CombinationCoverage` (modos exact/streaming/sampled, trava anti-estouro). 49 testes verdes.
+- [ ] **Bloco 3 - Geracao justa**: `random_balanced` (amostragem uniforme sem vies, respeita
+      allowed_ticket_sizes e orcamento), testes de uniformidade + reprodutibilidade.
+- [ ] **Bloco 4 - Wheeling / covering designs**: garantia K-de-M verificavel; teste de forca bruta.
+- [ ] **Bloco 5 - Otimizacao de carteira**: local_search/simulated_annealing/genetic/grasp sobre
+      a funcao-objetivo de metrics; comparar vs baseline aleatoria.
+- [ ] **Bloco 6 - Export completo**: Excel (openpyxl) + charts (matplotlib); disclaimer em tudo.
+- [ ] **Bloco 7 - CLI ponta-a-ponta**: `generate` ligado aos otimizadores; demo reproducivel.
+- [ ] **Bloco 8 - Auditoria + performance**: stress Lotofacil/Lotomania, edge cases, auditoria anti-previsao.
 
 ## Proximo passo seguro
 
-Bloco 2 (geracao justa + orcamento): rng.py + generate.py. Aguardando instrucao do usuario.
+Bloco 3 (geracao justa em `random_balanced`). Aguardando instrucao do usuario.

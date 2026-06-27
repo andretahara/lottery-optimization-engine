@@ -108,3 +108,26 @@ Loteria tem valor esperado negativo. A engine NAO promete lucro nem aumento de c
 ganhar o principal alem do trivial `M/C(N,K)`. Otimiza estrutura de cobertura e, quando o
 usuario joga multiplas pessoas/bolao, reduz redundancia do dinheiro gasto. Disclaimer
 obrigatorio em toda saida.
+
+## 11. Cobertura unica vs bruta (premio principal da carteira)
+
+A engine define a probabilidade do premio principal de uma carteira como:
+
+```
+P_principal(carteira) = (# K-subsets UNICOS cobertos) / C(N, K)
+```
+
+- **Cobertura bruta** = soma de `C(T_i, K)` sobre os jogos (conta repeticoes).
+- **Cobertura unica** = numero de K-subsets DISTINTOS cobertos (deduplicado). So a unica
+  conta para a probabilidade: cobrir a mesma combinacao duas vezes nao aumenta a chance.
+
+Implementado em `CombinationCoverage` com tres modos:
+- **exact**: constroi o conjunto de subconjuntos unicos. Tem trava de memoria
+  (`DEFAULT_EXACT_CAP`); acima dela, recusa e sugere modo amostral.
+- **streaming**: gera subconjuntos preguicosamente (sem materializar tudo).
+- **sampled**: estimativa Monte Carlo da fracao do espaco coberta - necessario para
+  K-subsets gigantes (ex.: Lotomania, C(50,20) ~ 4.7e13, inviavel exato).
+
+Faixas inferiores (acertar `h < K`) usam a hipergeometrica por aposta
+`C(T,h)*C(N-T,K-h)/C(N,K)`; a agregacao por carteira e aproximada (cota de Boole),
+nunca apresentada como exata.

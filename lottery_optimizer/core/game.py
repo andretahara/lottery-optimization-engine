@@ -1,11 +1,14 @@
-"""GameSpec: loteria como configuracao validada (ADR-003, ADR-014 pydantic)."""
+"""GameSpec: loteria combinatoria como configuracao (ADR-003, ADR-014, ADR-017).
+
+Nenhuma regra de loteria especifica mora nas funcoes do nucleo: tudo vem da GameSpec.
+"""
 
 from __future__ import annotations
 
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 from .combinations import n_choose_k
 from .validation import SpecError
@@ -14,72 +17,92 @@ from .validation import SpecError
 class GameSpec(BaseModel):
     """Especificacao imutavel de uma loteria combinatoria.
 
-    Universo: inteiros de ``number_start`` a ``number_start + pool - 1``. A aposta marca
-    de ``min_marks`` a ``max_marks`` dezenas; o sorteio escolhe ``draw_size``.
-    ``prize_tiers`` = quantidades de acerto que premiam (crescente). ``price_table`` = None
-    ate o usuario configurar precos vigentes (ADR-006).
+    Universo: inteiros de ``universe_min`` a ``universe_max`` (inclusive). O sorteio escolhe
+    ``draw_size`` dezenas. A aposta marca uma quantidade em ``allowed_ticket_sizes``.
+    ``price_table`` mapeia tamanho->preco oficial (None ate o usuario configurar, ADR-006).
+    ``prize_tiers`` e ``notes`` sao opcionais.
     """
 
     model_config = ConfigDict(frozen=True)
 
-    slug: str
+    game_id: str
     name: str
-    pool: int  # N
+    universe_min: int
+    universe_max: int
     draw_size: int  # K
-    min_marks: int  # menor T
-    max_marks: int  # maior T
-    prize_tiers: tuple[int, ...]
-    number_start: int = 1
+    allowed_ticket_sizes: tuple[int, ...]
     price_table: dict[int, Decimal] | None = None
-    extra_rules: dict[str, Any] = {}
+    prize_tiers: tuple[int, ...] | None = None
+    notes: str | None = None
+
+    @field_validator("allowed_ticket_sizes", mode="before")
+    @classmethod
+    def _norm_sizes(cls, v: Any) -> tuple[int, ...]:
+        return tuple(sorted(set(v)))
+
+    @field_validator("prize_tiers", mode="before")
+    @classmethod
+    def _norm_tiers(cls, v: Any) -> Any:
+        if v is None:
+            return None
+        return tuple(sorted(set(v)))
 
     @model_validator(mode="after")
     def _check(self) -> "GameSpec":
-        if not self.name or not self.slug:
-            raise SpecError("slug/name vazio")
-        if self.pool <= 0:
-            raise SpecError(f"pool deve ser > 0, recebido {self.pool}")
-        if not (1 <= self.draw_size <= self.pool):
-            raise SpecError(f"draw_size deve estar em [1, {self.pool}], recebido {self.draw_size}")
-        if not (1 <= self.min_marks <= self.max_marks <= self.pool):
+        if not self.game_id or not self.name:
+            raise SpecError("game_id/name vazio")
+        if self.universe_min > self.universe_max:
             raise SpecError(
-                f"exige 1 <= min_marks <= max_marks <= pool; "
-                f"min={self.min_marks} max={self.max_marks} pool={self.pool}"
+                f"universe_min ({self.universe_min}) > universe_max ({self.universe_max})"
             )
-        if self.min_marks < self.draw_size:
-            raise SpecError(
-                f"min_marks ({self.min_marks}) < draw_size ({self.draw_size}): "
-                "aposta precisa marcar ao menos o tamanho do sorteio"
-            )
-        if not self.prize_tiers:
-            raise SpecError("prize_tiers vazio")
-        if list(self.prize_tiers) != sorted(set(self.prize_tiers)):
-            raise SpecError(f"prize_tiers deve ser crescente e sem repetidos: {self.prize_tiers}")
-        max_hits = min(self.draw_size, self.max_marks)
-        for tier in self.prize_tiers:
-            if not (0 <= tier <= max_hits):
-                raise SpecError(f"tier {tier} fora de [0, {max_hits}]")
+        pool = self.pool
+        if not (1 <= self.draw_size <= pool):
+            raise SpecError(f"draw_size deve estar em [1, {pool}], recebido {self.draw_size}")
+        if not self.allowed_ticket_sizes:
+            raise SpecError("allowed_ticket_sizes vazio")
+        for size in self.allowed_ticket_sizes:
+            if not (self.draw_size <= size <= pool):
+                raise SpecError(
+                    f"ticket size {size} fora de [draw_size={self.draw_size}, pool={pool}]"
+                )
+        if self.prize_tiers is not None:
+            for tier in self.prize_tiers:
+                if not (0 <= tier <= self.draw_size):
+                    raise SpecError(f"prize tier {tier} fora de [0, draw_size={self.draw_size}]")
         if self.price_table is not None:
-            for marks in self.price_table:
-                if not (self.min_marks <= marks <= self.max_marks):
+            for size in self.price_table:
+                if size not in self.allowed_ticket_sizes:
                     raise SpecError(
-                        f"price_table tem marcas {marks} fora de [{self.min_marks}, {self.max_marks}]"
+                        f"price_table tem tamanho {size} fora de allowed_ticket_sizes"
                     )
         return self
 
+    # --- derivados ---
     @property
-    def number_end(self) -> int:
-        return self.number_start + self.pool - 1
+    def pool(self) -> int:
+        """N: quantidade de dezenas no universo."""
+        return self.universe_max - self.universe_min + 1
+
+    @property
+    def min_ticket_size(self) -> int:
+        return self.allowed_ticket_sizes[0]
+
+    @property
+    def max_ticket_size(self) -> int:
+        return self.allowed_ticket_sizes[-1]
 
     def number_universe(self) -> range:
-        return range(self.number_start, self.number_end + 1)
+        return range(self.universe_min, self.universe_max + 1)
+
+    def contains(self, number: int) -> bool:
+        return self.universe_min <= number <= self.universe_max
 
     def total_outcomes(self) -> int:
-        """C(pool, draw_size): tamanho do espaco amostral."""
+        """C(N, K): tamanho do espaco amostral do sorteio."""
         return n_choose_k(self.pool, self.draw_size)
 
-    def simple_combinations(self, marks: int) -> int:
-        """C(marks, draw_size): jogos simples equivalentes a uma aposta de `marks` dezenas."""
-        if not (self.min_marks <= marks <= self.max_marks):
-            raise SpecError(f"marks {marks} fora de [{self.min_marks}, {self.max_marks}]")
-        return n_choose_k(marks, self.draw_size)
+    def simple_combinations(self, ticket_size: int) -> int:
+        """C(T, K): jogos simples equivalentes a uma aposta de `ticket_size` dezenas."""
+        if ticket_size not in self.allowed_ticket_sizes:
+            raise SpecError(f"ticket size {ticket_size} nao permitido ({self.allowed_ticket_sizes})")
+        return n_choose_k(ticket_size, self.draw_size)

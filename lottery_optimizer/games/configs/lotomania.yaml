@@ -1,10 +1,9 @@
-slug: lotomania
+game_id: lotomania
 name: Lotomania
-pool: 100
+universe_min: 0
+universe_max: 99
 draw_size: 20
-min_marks: 50
-max_marks: 50
-number_start: 0
-prize_tiers: [0, 15, 16, 17, 18, 19, 20]
+allowed_ticket_sizes: [50]
 price_table: null
-extra_rules: {}
+prize_tiers: [0, 15, 16, 17, 18, 19, 20]
+notes: "Marca 50 dezenas de 0 a 99; premia 15..20 acertos ou 0 acertos."

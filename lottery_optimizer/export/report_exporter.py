@@ -14,7 +14,7 @@ def build_report(portfolio: Portfolio, spec: GameSpec) -> str:
     lines = [
         DISCLAIMER,
         "",
-        f"Loteria: {spec.name} ({spec.slug})",
+        f"Loteria: {spec.name} ({spec.game_id})",
         f"Jogos: {len(portfolio)}",
         "",
     ]

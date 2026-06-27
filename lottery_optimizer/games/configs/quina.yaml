@@ -1,10 +1,9 @@
-slug: quina
+game_id: quina
 name: Quina
-pool: 80
+universe_min: 1
+universe_max: 80
 draw_size: 5
-min_marks: 5
-max_marks: 7
-number_start: 1
-prize_tiers: [2, 3, 4, 5]
+allowed_ticket_sizes: [5, 6, 7]
 price_table: null
-extra_rules: {}
+prize_tiers: [2, 3, 4, 5]
+notes: null

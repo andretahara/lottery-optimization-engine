@@ -1,10 +1,9 @@
-slug: lotofacil
+game_id: lotofacil
 name: Lotofácil
-pool: 25
+universe_min: 1
+universe_max: 25
 draw_size: 15
-min_marks: 15
-max_marks: 18
-number_start: 1
-prize_tiers: [11, 12, 13, 14, 15]
+allowed_ticket_sizes: [15, 16, 17, 18]
 price_table: null
-extra_rules: {}
+prize_tiers: [11, 12, 13, 14, 15]
+notes: null
