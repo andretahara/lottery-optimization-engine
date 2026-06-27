@@ -162,3 +162,14 @@ revertem antigas referenciam o ADR superado.
   uniforme pura. Ambos sem quente/frio/historico.
 - **Consequencia**: Reduz variancia de cobertura sem violar a regra fundamental nem prever sorteio.
   Justica do modo puro validada por teste qui-quadrado.
+
+## ADR-023 - PortfolioScore parametrizavel; cobertura unica de K-subsets e o criterio principal
+- **Contexto**: A funcao-objetivo precisa deixar explicito o que importa pro premio principal vs
+  faixas secundarias, sem sugerir previsao.
+- **Decisao**: `PortfolioScore` combina componentes em [0,1] (main_coverage = K-subsets UNICOS /
+  C(N,K), intermediate = pares/trincas, diversity, balance, low_redundancy, budget_adherence) menos
+  penalizacoes (duplicatas, concentracao, baixa distancia). Pesos configuraveis por YAML/JSON.
+  main_coverage e o PRINCIPAL; balanceamento melhora diversidade/redundancia mas NAO preve sorteio;
+  pesos altos em intermediate favorecem faixas secundarias.
+- **Consequencia**: Objetivo transparente e auditavel (breakdown por componente). Metricas mantidas
+  aditivas (funcoes simples do Bloco 1 preservadas para back-compat).

@@ -32,6 +32,7 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 - [x] **Bloco 3 - Sistema de configuracao + guarda de precos**: GameRegistry (load/validate/list/override/custom), 6 YAML com campos de preco (price_status/official_price_last_checked/price_source_note), user_overrides.example.yaml, guarda assert_prices_usable (bloqueia null/example sem --allow-example-prices), relatorio registra config de preco. 57 testes.
 - [x] **Bloco 3b - Geracao justa**: RandomBalancedOptimizer (modo uniforme justo + modo balanceado simetrico, sem favorecer dezena); guardas (marks permitido, num_tickets <= C(N,marks)); reprodutivel por seed. Teste de justica qui-quadrado. 64 testes.: `random_balanced` (amostragem uniforme sem vies, respeita
       allowed_ticket_sizes e orcamento), testes de uniformidade + reprodutibilidade.
+- [x] **Bloco M - Metricas avancadas**: FrequencyMetrics, BalanceMetrics, CoverageMetrics, DistanceMetrics, PortfolioScore (pesos configuraveis YAML/JSON; main_coverage = criterio principal). 72 testes.
 - [ ] **Bloco 4 - Wheeling / covering designs**: garantia K-de-M verificavel; teste de forca bruta.
 - [ ] **Bloco 5 - Otimizacao de carteira**: local_search/simulated_annealing/genetic/grasp sobre
       a funcao-objetivo de metrics; comparar vs baseline aleatoria.
