@@ -204,3 +204,14 @@ revertem antigas referenciam o ADR superado.
   figura por grafico). CSV colunar com dezenas ordenadas. Disclaimer no TXT e na aba AvisoMatematico.
 - **Consequencia**: Uma fonte de verdade para o relatorio. Custo: cobertura no relatorio usa exact
   (fallback sampled) - caro em jogos enormes, aceitavel para export pontual.
+
+## ADR-027 - CLI: orcamento por contagem; bloqueio de preco de exemplo; output datado
+- **Contexto**: A CLI precisa ser usavel sem precos oficiais (que sao do usuario) mas sem permitir
+  aposta real com preco enganoso.
+- **Decisao**: `--budget` = numero de apostas (modo por contagem, sem preco). `_check_real_run`
+  bloqueia jogo com price_status='example' sem `--allow-example-prices` (preco unset e ok no modo
+  contagem, custo aparece 'n/d'). Saidas em `output/YYYYMMDD_HHMMSS_GAME_ID/` com config.log. Todo
+  comando imprime o aviso matematico. 9 comandos (list-games/inspect-game/validate-config/generate/
+  optimize/report/export/compare/benchmark).
+- **Consequencia**: Fluxo completo testavel offline via CliRunner; orcamento monetario fica nos
+  scripts de exemplo (que exigem preco oficial). Benchmark base em `benchmark.py` (bloco Benchmark enriquece).

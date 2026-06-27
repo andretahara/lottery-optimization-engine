@@ -7,7 +7,16 @@ from .greedy_coverage import GreedyCoverageGenerator
 from .hybrid_initial import HybridInitialGenerator
 from .random_gen import RandomGenerator
 
+
+GENERATORS = {
+    "random": RandomGenerator,
+    "balanced_random": BalancedRandomGenerator,
+    "greedy_coverage": GreedyCoverageGenerator,
+    "diversity": DiversityGenerator,
+    "hybrid_initial": HybridInitialGenerator,
+}
+
 __all__ = [
     "BaseGenerator", "GenerationConstraints", "RandomGenerator", "BalancedRandomGenerator",
-    "GreedyCoverageGenerator", "DiversityGenerator", "HybridInitialGenerator",
+    "GreedyCoverageGenerator", "DiversityGenerator", "HybridInitialGenerator", "GENERATORS",
 ]

@@ -21,3 +21,19 @@ def export_csv(portfolio: Portfolio, path, *, game_id: str = "") -> Path:
             nums = list(t.numbers) + [""] * (max_size - len(t))
             w.writerow([game_id, i, len(t), *nums])
     return p
+
+
+def load_csv(spec, path):
+    """Carrega uma carteira de um jogos.csv (inverso de export_csv)."""
+    import csv as _csv
+
+    from ..core.portfolio import Portfolio
+    from ..core.ticket import Ticket
+
+    tickets = []
+    with Path(path).open(encoding="utf-8") as fh:
+        reader = _csv.DictReader(fh)
+        for row in reader:
+            nums = [int(v) for k, v in row.items() if k.startswith("dezena_") and v not in ("", None)]
+            tickets.append(Ticket(numbers=tuple(nums)))
+    return Portfolio(spec, tickets)

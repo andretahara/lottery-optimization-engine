@@ -37,7 +37,7 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 - [x] **Bloco G - Geradores iniciais**: BaseGenerator (generate(spec,budget,constraints,seed)) + Random/BalancedRandom/GreedyCoverage/Diversity/HybridInitial; estrategias all_simple/fixed/mixed_ticket_sizes; reprodutivel, sem duplicatas, logs. 91 testes.
 - [x] **Bloco O - Otimizadores**: BaseOptimizer + OptimizationResult + RuntimeConfig; LocalSearch/SimulatedAnnealing/Genetic/GRASP/Hybrid; movimentos (troca dezena/aposta/replace-worst); checkpoint; reprodutivel; coverage_mode auto. 102 testes.
 - [ ] **Bloco 6 - Export completo**: Excel (openpyxl) + charts (matplotlib); disclaimer em tudo.
-- [ ] **Bloco 7 - CLI ponta-a-ponta**: `generate` ligado aos otimizadores; demo reproducivel.
+- [x] **Bloco CLI**: Typer+Rich, 9 comandos (list-games, inspect-game, validate-config, generate, optimize, report, export, compare, benchmark); aviso obrigatorio sempre, bloqueia preco exemplo, output/TS_GAME/, logs. 110 testes.
 - [ ] **Bloco 8 - Auditoria + performance**: stress Lotofacil/Lotomania, edge cases, auditoria anti-previsao.
 
 ## Proximo passo seguro
