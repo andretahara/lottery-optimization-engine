@@ -27,3 +27,10 @@ class SeededRng:
 
     def randint(self, a: int, b: int) -> int:
         return self._rng.randint(a, b)
+
+    def random(self) -> float:
+        """Float uniforme em [0, 1)."""
+        return self._rng.random()
+
+    def choice(self, seq):
+        return self._rng.choice(list(seq))

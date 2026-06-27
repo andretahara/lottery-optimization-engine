@@ -74,3 +74,17 @@ def test_balanced_beats_random_on_balance():
     bal = BalancedRandomGenerator().generate(spec, 16, simple(), seed=4)
     rnd = RandomGenerator().generate(spec, 16, simple(), seed=4)
     assert balance_score(bal, spec) >= balance_score(rnd, spec)
+
+
+def test_random_is_fair_chi_square():
+    # RandomGenerator (uniforme): nenhuma dezena sistematicamente favorecida
+    spec = registry.get("quina")
+    p = RandomGenerator().generate(spec, budget=3000, constraints=simple(), seed=42)
+    from collections import Counter
+    freq = Counter()
+    for t in p:
+        freq.update(t.numbers)
+    expected = 3000 * 5 / spec.pool
+    chi2 = sum((freq.get(n, 0) - expected) ** 2 / expected for n in spec.number_universe())
+    assert chi2 < 2 * (spec.pool - 1)
+    assert min(freq.values()) > 0

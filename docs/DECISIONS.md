@@ -183,3 +183,15 @@ revertem antigas referenciam o ADR superado.
   (_CANDIDATES=40) -> nao enumeram o espaco. Estrategias all_simple/fixed/mixed_ticket_sizes.
 - **Consequencia**: Reprodutivel por seed, sem duplicatas, sem explosao. Greedy/diversity sao
   heuristicas (nao otimo global) - aceitavel para carteira inicial; otimizadores refinam depois.
+
+## ADR-025 - Otimizadores: BaseOptimizer/OptimizationResult, movimentos seguros, score=PortfolioScore
+- **Contexto**: Refinar a carteira inicial sem violar orcamento/duplicatas/universo.
+- **Decisao**: `BaseOptimizer.optimize(initial, spec, budget, score_config, runtime_config, seed)
+  -> OptimizationResult` (best/initial/improvement/iterations/elapsed/score_history/accepted/
+  rejected/checkpoint/logs). Movimentos (troca de dezena, troca de aposta, replace-worst) preservam
+  contagem e validade e nunca criam duplicata. Todos os otimizadores inicializam best=carteira
+  inicial -> nunca pioram. coverage_mode 'auto' (exact com fallback sampled). SeededRng -> reprodutivel.
+  Antigo algorithms/Optimizer (random_balanced) removido: virou generators (BalancedRandomGenerator).
+- **Consequencia**: 5 otimizadores (LocalSearch/SA/Genetic/GRASP/Hybrid) com contrato unico.
+  Custo: score com cobertura exata e caro (replace-worst chama scorer N vezes); perf sera tratada
+  no bloco de auditoria de engenharia (cache/sampled/limites).

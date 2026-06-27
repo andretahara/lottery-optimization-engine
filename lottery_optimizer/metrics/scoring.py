@@ -96,9 +96,21 @@ class PortfolioScore:
         self, portfolio: Portfolio, spec: GameSpec, *, budget=None, cost_model=None,
         coverage_mode: str = "exact",
     ) -> dict[str, float]:
-        """Componentes individuais do score (transparencia/auditoria)."""
+        """Componentes individuais do score (transparencia/auditoria).
+
+        coverage_mode='auto' tenta exact e cai para sampled se a cobertura exata estourar a
+        trava de memoria (jogos grandes); 'exact'/'sampled' forcam o modo.
+        """
+        from ..core.validation import SpecError
+
         cov = CoverageMetrics(spec)
-        main = cov.main(portfolio, mode=coverage_mode)
+        if coverage_mode == "auto":
+            try:
+                main = cov.main(portfolio, mode="exact")
+            except SpecError:
+                main = cov.main(portfolio, mode="sampled")
+        else:
+            main = cov.main(portfolio, mode=coverage_mode)
         total = spec.total_outcomes()
         diversity = mean_pairwise_distance(portfolio)
         comp = {
