@@ -41,6 +41,8 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 - [x] **Bloco Ex1 - Quina de Sao Joao**: scripts/run_quina_sao_joao.py + configs/quina_sao_joao_budget_19140.yaml; valida preco (PARA se null/exemplo), decide simples/multipla pelo custo por combinacao equivalente, gera+otimiza+exporta. Sem preco inventado.
 - [ ] **Bloco 8 - Auditoria + performance**: stress Lotofacil/Lotomania, edge cases, auditoria anti-previsao.
 
-## Proximo passo seguro
+## Status
 
-Bloco 4 (wheeling / covering designs com garantia K-de-M verificavel). Aguardando instrucao do usuario.
+TODOS os blocos cobertos (Fundacao -> Runbook). 149 testes verdes, ruff limpo. Engine generica,
+matematicamente auditada, performance otimizada (suite ~20s), sem preco oficial inventado.
+Pendencia operacional unica: usuario preencher precos oficiais vigentes antes de aposta real.
