@@ -34,6 +34,7 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
       allowed_ticket_sizes e orcamento), testes de uniformidade + reprodutibilidade.
 - [x] **Bloco M - Metricas avancadas**: FrequencyMetrics, BalanceMetrics, CoverageMetrics, DistanceMetrics, PortfolioScore (pesos configuraveis YAML/JSON; main_coverage = criterio principal). 72 testes.
 - [ ] **Bloco 4 - Wheeling / covering designs**: garantia K-de-M verificavel; teste de forca bruta.
+- [x] **Bloco G - Geradores iniciais**: BaseGenerator (generate(spec,budget,constraints,seed)) + Random/BalancedRandom/GreedyCoverage/Diversity/HybridInitial; estrategias all_simple/fixed/mixed_ticket_sizes; reprodutivel, sem duplicatas, logs. 91 testes.
 - [ ] **Bloco 5 - Otimizacao de carteira**: local_search/simulated_annealing/genetic/grasp sobre
       a funcao-objetivo de metrics; comparar vs baseline aleatoria.
 - [ ] **Bloco 6 - Export completo**: Excel (openpyxl) + charts (matplotlib); disclaimer em tudo.

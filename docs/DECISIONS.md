@@ -173,3 +173,13 @@ revertem antigas referenciam o ADR superado.
   pesos altos em intermediate favorecem faixas secundarias.
 - **Consequencia**: Objetivo transparente e auditavel (breakdown por componente). Metricas mantidas
   aditivas (funcoes simples do Bloco 1 preservadas para back-compat).
+
+## ADR-024 - Geradores: pacote proprio, candidatos bounded, orcamento por contagem
+- **Contexto**: Construir carteira inicial e tarefa distinta de otimizar; precisa escalar sem
+  estourar memoria.
+- **Decisao**: pacote `generators/` separado de `algorithms/`. `BaseGenerator.generate(spec, budget,
+  constraints, seed)`; budget = numero de apostas (orcamento monetario exige preco oficial, bloqueado).
+  Geradores gulosos (greedy_coverage/diversity) usam pool BOUNDED de candidatos aleatorios por slot
+  (_CANDIDATES=40) -> nao enumeram o espaco. Estrategias all_simple/fixed/mixed_ticket_sizes.
+- **Consequencia**: Reprodutivel por seed, sem duplicatas, sem explosao. Greedy/diversity sao
+  heuristicas (nao otimo global) - aceitavel para carteira inicial; otimizadores refinam depois.
