@@ -1,0 +1,10 @@
+slug: mega-sena
+name: Mega-Sena
+pool: 60
+draw_size: 6
+min_marks: 6
+max_marks: 15
+number_start: 1
+prize_tiers: [4, 5, 6]
+price_table: null
+extra_rules: {}

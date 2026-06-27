@@ -1,0 +1,10 @@
+slug: lotomania
+name: Lotomania
+pool: 100
+draw_size: 20
+min_marks: 50
+max_marks: 50
+number_start: 0
+prize_tiers: [0, 15, 16, 17, 18, 19, 20]
+price_table: null
+extra_rules: {}

@@ -1,5 +1,27 @@
 # ARCHITECTURE - Lottery Optimization Engine
 
+> **Atualizado (ADR-013):** o pacote real e `lottery_optimizer/` (layout flat na raiz),
+> nao `src/lottery_engine`. Arvore vigente:
+>
+> ```
+> lottery_optimizer/
+>   __init__.py  disclaimer.py
+>   core/      combinations.py game.py ticket.py portfolio.py probability.py cost.py validation.py
+>   metrics/   frequency.py coverage.py distance.py balance.py scoring.py
+>   algorithms/ base.py random_balanced.py local_search.py simulated_annealing.py genetic.py grasp.py  (stubs)
+>   games/     registry.py  configs/*.yaml (6 loterias)
+>   export/    csv_exporter.py report_exporter.py excel_exporter.py(stub) charts.py(stub)
+>   cli/       main.py (typer)
+>   utils/     random.py logging.py checkpoint.py
+> tests/  scripts/  Makefile  pyproject.toml  requirements.txt
+> ```
+>
+> Os principios abaixo (camadas sem ciclo, puro por default, config-nao-codigo,
+> determinismo, falha explicita) seguem valendo, agora mapeados nesses modulos.
+
+---
+
+
 Nucleo de funcoes puras importavel + CLI fino. Loteria como configuracao. Modulos com
 responsabilidade unica e dependencias explicitas. Sem rede, sem I/O implicito.
 

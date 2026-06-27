@@ -38,8 +38,7 @@ tests/  (um test_<modulo> por modulo)
 - [x] **Bloco 0.1 - Base documental**: `CLAUDE.md` (memoria operacional, 13 regras + comandos),
       `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/MATH_MODEL.md`, `docs/ROADMAP.md`,
       `docs/DECISIONS.md` (ADR-001..012), `docs/TESTING.md`. Sem codigo de engine.
-- [x] **Bloco 1 - Scaffold + Spec + Registry**: `pyproject.toml`, `src/` layout, `disclaimer.py`,
-      `combinatorics.py`, `LotterySpec`+validacao, presets das 8 loterias (precos None), testes verdes.
+- [x] **Bloco 1 - Esqueleto profissional + Spec + Registry**: pacote `lottery_optimizer` (core/metrics/algorithms/games/export/cli/utils), GameSpec/Ticket/Portfolio (pydantic), combinatoria, probabilidade, custo, metricas reais; algoritmos/Excel/charts/cli-generate como stubs; 6 YAML de loteria; Makefile, scripts de exemplo. 49 testes verdes, ruff limpo.
 - [ ] **Bloco 2 - Geracao justa + orcamento**: `rng.py` (seed reproducivel), `generate.py`
       (jogos uniformes sem vies; respeita marks e orcamento), testes (uniformidade + repro).
 - [ ] **Bloco 3 - Metricas de carteira**: `metrics.py` (cobertura pares/trincas, sobreposicao,

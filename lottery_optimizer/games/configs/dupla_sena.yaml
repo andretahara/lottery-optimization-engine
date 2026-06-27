@@ -1,0 +1,11 @@
+slug: dupla-sena
+name: Dupla Sena
+pool: 50
+draw_size: 6
+min_marks: 6
+max_marks: 15
+number_start: 1
+prize_tiers: [3, 4, 5, 6]
+price_table: null
+extra_rules:
+  two_draws: true

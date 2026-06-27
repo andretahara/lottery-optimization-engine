@@ -1,0 +1,10 @@
+slug: quina
+name: Quina
+pool: 80
+draw_size: 5
+min_marks: 5
+max_marks: 7
+number_start: 1
+prize_tiers: [2, 3, 4, 5]
+price_table: null
+extra_rules: {}

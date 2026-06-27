@@ -1,0 +1,11 @@
+slug: timemania
+name: Timemania
+pool: 80
+draw_size: 7
+min_marks: 10
+max_marks: 10
+number_start: 1
+prize_tiers: [3, 4, 5, 6, 7]
+price_table: null
+extra_rules:
+  team_of_heart: true

@@ -1,0 +1,10 @@
+slug: lotofacil
+name: Lotofácil
+pool: 25
+draw_size: 15
+min_marks: 15
+max_marks: 18
+number_start: 1
+prize_tiers: [11, 12, 13, 14, 15]
+price_table: null
+extra_rules: {}

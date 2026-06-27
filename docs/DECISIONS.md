@@ -81,3 +81,34 @@ revertem antigas referenciam o ADR superado.
 - **Contexto**: Testes de geracao e otimizacao precisam ser reproduziveis.
 - **Decisao**: Toda aleatoriedade passa por `rng.Rng(seed)`. Mesma seed => mesma saida.
 - **Consequencia**: CI determinista, debugging viavel. Exige disciplina: nenhum `random` solto no nucleo.
+
+## ADR-013 - Reestruturacao para pacote `lottery_optimizer` (supera ADR-008)
+- **Contexto**: Bloco "esqueleto profissional" pediu arvore rica (core/metrics/algorithms/
+  games/export/cli/utils) com layout flat. O pacote `lottery_engine` (src/) do Bloco 1 era
+  mais simples e cobria so parte.
+- **Decisao**: Adotar `lottery_optimizer/` flat na raiz. Portar a logica real do `lottery_engine`
+  (combinatoria, validacao de spec, params das 8 -> 6 loterias) para `core/` e `games/`, e
+  remover `src/lottery_engine`. Supera o layout src/ do ADR-008.
+- **Consequencia**: Um unico pacote, decomposicao por responsabilidade. Nada de valor perdido
+  (logica portada + testes reescritos). Custo: churn de Bloco 1, justificado pela estrutura alvo.
+
+## ADR-014 - Modelos de dominio com pydantic
+- **Contexto**: GameSpec/Ticket precisam de validacao robusta e imutabilidade.
+- **Decisao**: pydantic v2 (`frozen=True`) para `GameSpec` e `Ticket`; `Portfolio` como classe
+  comum (colecao mutavel controlada). Validacao via `model_validator`/`field_validator` levantando
+  SpecError/TicketError (pydantic encapsula em ValidationError).
+- **Consequencia**: Validacao declarativa e mensagens claras. Dep de runtime: pydantic.
+
+## ADR-015 - 6 specs base; variantes de sorteio especial adiadas
+- **Contexto**: O bloco de esqueleto listou 6 YAML (quina, mega_sena, lotofacil, lotomania,
+  timemania, dupla_sena), sem Mega da Virada / Quina de Sao Joao.
+- **Decisao**: Registrar as 6 base. Variantes especiais (Virada, Sao Joao) sao as mesmas specs
+  + flags `special_draw/no_accumulation`; serao adicionadas como YAML quando necessario.
+- **Consequencia**: Catalogo enxuto agora; extensao trivial (novo YAML, zero codigo).
+
+## ADR-016 - Metricas normalizadas em [0, 1]
+- **Contexto**: `score` ponderado (pesos somando 1) exige metricas comparaveis. Distancia crua
+  (uniao - intersecao) e ilimitada e estourava o score acima de 1.
+- **Decisao**: Distancia vira distancia de Jaccard normalizada |A^B|/|AvB| em [0,1]. Todas as
+  metricas (coverage, distance, balance) ficam em [0,1] -> score em [0,1].
+- **Consequencia**: Score interpretavel e limitado. Bug pego por teste (CLAUDE.md §7-8).

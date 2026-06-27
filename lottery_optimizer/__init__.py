@@ -6,8 +6,6 @@ sorteios e nao altera a probabilidade individual de nenhuma combinacao. Ver CLAU
 """
 
 from .disclaimer import DISCLAIMER
-from .spec import LotterySpec
-from . import combinatorics, registry
 
-__all__ = ["DISCLAIMER", "LotterySpec", "combinatorics", "registry"]
+__all__ = ["DISCLAIMER", "__version__"]
 __version__ = "0.1.0"

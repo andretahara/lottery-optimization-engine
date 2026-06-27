@@ -25,3 +25,7 @@ htmlcov/
 out/
 *.xlsx
 *.csv
+
+# Charts / checkpoints gerados
+*.png
+checkpoints/

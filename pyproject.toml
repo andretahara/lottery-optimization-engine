@@ -7,17 +7,31 @@ name = "lottery-optimization-engine"
 version = "0.1.0"
 description = "Engine generica de otimizacao de cobertura combinatoria para loterias"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { text = "MIT" }
-dependencies = []
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "openpyxl>=3.1",
+    "matplotlib>=3.8",
+    "typer>=0.12",
+    "rich>=13.0",
+]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "hypothesis>=6", "ruff>=0.5"]
-# Deps de runtime entram quando os modulos que as usam chegam:
-# numpy (metrics, Bloco 3), openpyxl (export Excel, Bloco 6).
+dev = ["pytest>=8", "pytest-cov>=5", "hypothesis>=6", "ruff>=0.5"]
+accel = ["scipy>=1.11", "ortools>=9.10", "numba>=0.59"]
+
+[project.scripts]
+lottery-optimizer = "lottery_optimizer.cli.main:app"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+include = ["lottery_optimizer*"]
+
+[tool.setuptools.package-data]
+lottery_optimizer = ["games/configs/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -25,4 +39,4 @@ addopts = "-q"
 
 [tool.ruff]
 line-length = 100
-src = ["src", "tests"]
+target-version = "py311"
