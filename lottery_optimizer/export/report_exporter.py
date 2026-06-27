@@ -1,4 +1,4 @@
-"""Relatorio textual de carteira. SEMPRE injeta o disclaimer obrigatorio (ADR-005)."""
+"""Relatorio textual de carteira. SEMPRE injeta o disclaimer e registra a config de preco usada."""
 
 from __future__ import annotations
 
@@ -6,15 +6,16 @@ from pathlib import Path
 
 from ..core.game import GameSpec
 from ..core.portfolio import Portfolio
+from ..core.pricing import price_config_summary
 from ..disclaimer import DISCLAIMER
 
 
 def build_report(portfolio: Portfolio, spec: GameSpec) -> str:
-    """Monta o relatorio em texto. Comeca pelo disclaimer."""
     lines = [
         DISCLAIMER,
         "",
         f"Loteria: {spec.name} ({spec.game_id})",
+        f"Config de preco: {price_config_summary(spec)}",
         f"Jogos: {len(portfolio)}",
         "",
     ]

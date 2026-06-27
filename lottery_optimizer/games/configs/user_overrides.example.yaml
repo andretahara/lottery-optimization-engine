@@ -1,0 +1,32 @@
+# Como atualizar precos OFICIAIS antes de uma otimizacao real.
+#
+# A engine NAO busca preco na internet e NAO inventa precos. Voce e responsavel por
+# verificar o valor vigente em https://loterias.caixa.gov.br e preencher aqui.
+#
+# Passos:
+#   1) Verifique o preco atual de cada tamanho de aposta no site oficial.
+#   2) Preencha price_table (tamanho -> preco em reais, como string decimal).
+#   3) Marque price_status: official e a data em official_price_last_checked.
+#   4) Rode a engine apontando este arquivo (registry.load_overrides_file / CLI).
+#
+# Enquanto price_status != official, a engine BLOQUEIA execucao real, a menos que
+# voce passe --allow-example-prices (ciente de que os numeros sao ilustrativos).
+#
+# Mapeamento: game_id -> campos sobrescritos.
+
+mega-sena:
+  # EXAMPLE_NOT_OFFICIAL - valores ilustrativos, NAO use em aposta real
+  price_status: example
+  official_price_last_checked: null
+  price_source_note: "EXAMPLE_NOT_OFFICIAL - troque pelos precos oficiais da Caixa"
+  price_table:
+    6: "5.00"     # EXAMPLE_NOT_OFFICIAL
+    7: "35.00"    # EXAMPLE_NOT_OFFICIAL (= 5.00 * C(7,6))
+
+# Exemplo de configuracao JA verificada (modelo de como deve ficar quando for real):
+# quina:
+#   price_status: official
+#   official_price_last_checked: "2026-06-26"
+#   price_source_note: "loterias.caixa.gov.br, conferido manualmente"
+#   price_table:
+#     5: "2.50"

@@ -6,4 +6,7 @@ draw_size: 5
 allowed_ticket_sizes: [5, 6, 7]
 price_table: null
 prize_tiers: [2, 3, 4, 5]
+price_status: unset
+official_price_last_checked: null
+price_source_note: "Preencher com preco oficial vigente da Caixa (loterias.caixa.gov.br). NAO verificado neste ambiente."
 notes: null

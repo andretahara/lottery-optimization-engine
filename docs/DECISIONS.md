@@ -134,3 +134,22 @@ revertem antigas referenciam o ADR superado.
 - **Decisao**: `CostModel` retorna `CostResult(amount, is_estimate)`. Oficial so quando o tamanho
   esta na price_table; senao estima `base * C(T,K)` com `is_estimate=True`; sem base nem tabela, erro.
 - **Consequencia**: Usuario sempre sabe o que e preco real vs estimativa. Reforca ADR-006.
+
+## ADR-020 - Guarda de precos: bloqueia execucao real com preco nulo/exemplo
+- **Contexto**: Inventar preco oficial e proibido (ADR-006). Mas precisamos permitir analise
+  com precos ilustrativos sem arriscar que virem aposta real por engano.
+- **Decisao**: GameSpec ganha `price_status` (unset|example|official), `official_price_last_checked`,
+  `price_source_note`. `core/pricing.assert_prices_usable` bloqueia run real salvo status official;
+  precos 'example' so passam com `--allow-example-prices`; 'unset'/null nunca passam. CostModel marca
+  `is_estimate=True` para qualquer preco nao-oficial. Relatorio registra a config de preco usada.
+- **Consequencia**: Impossivel disparar aposta real com preco inventado/ilustrativo sem consentimento
+  explicito. Os 6 YAML vem com price_table null (precos NAO verificados neste ambiente); exemplos
+  marcados EXAMPLE_NOT_OFFICIAL ficam so no user_overrides.example.yaml.
+
+## ADR-021 - GameRegistry com overrides locais e jogos customizados (sem estado global)
+- **Contexto**: Usuario precisa atualizar precos e criar jogos sem editar o pacote nem depender de rede.
+- **Decisao**: `GameRegistry` e classe instanciavel (carrega YAML de um dir). `apply_overrides`/
+  `load_overrides_file` sobrescrevem campos (revalidando), `add_custom` registra jogo novo. Funcoes
+  de modulo `available()/get()` delegam a uma instancia default cacheada. Overrides nunca mutam o default.
+- **Consequencia**: Reproduzivel e offline; precos do usuario entram por arquivo local. Arquivos
+  non-game (user_overrides.example.yaml) sao ignorados no load.

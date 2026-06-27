@@ -29,7 +29,8 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
       `Ticket`/`Portfolio` spec-aware, `CostModel` (oficial vs estimativa marcada), `ProbabilityModel`
       (premio principal = K-subsets UNICOS / C(N,K); faixas inferiores hipergeometricas),
       `CombinationCoverage` (modos exact/streaming/sampled, trava anti-estouro). 49 testes verdes.
-- [ ] **Bloco 3 - Geracao justa**: `random_balanced` (amostragem uniforme sem vies, respeita
+- [x] **Bloco 3 - Sistema de configuracao + guarda de precos**: GameRegistry (load/validate/list/override/custom), 6 YAML com campos de preco (price_status/official_price_last_checked/price_source_note), user_overrides.example.yaml, guarda assert_prices_usable (bloqueia null/example sem --allow-example-prices), relatorio registra config de preco. 57 testes.
+- [ ] **Bloco 3b - Geracao justa**: `random_balanced` (amostragem uniforme sem vies, respeita
       allowed_ticket_sizes e orcamento), testes de uniformidade + reprodutibilidade.
 - [ ] **Bloco 4 - Wheeling / covering designs**: garantia K-de-M verificavel; teste de forca bruta.
 - [ ] **Bloco 5 - Otimizacao de carteira**: local_search/simulated_annealing/genetic/grasp sobre
@@ -40,4 +41,4 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 
 ## Proximo passo seguro
 
-Bloco 3 (geracao justa em `random_balanced`). Aguardando instrucao do usuario.
+Bloco 3b (geracao justa em random_balanced). Aguardando instrucao do usuario.
