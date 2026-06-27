@@ -153,3 +153,12 @@ revertem antigas referenciam o ADR superado.
   de modulo `available()/get()` delegam a uma instancia default cacheada. Overrides nunca mutam o default.
 - **Consequencia**: Reproduzivel e offline; precos do usuario entram por arquivo local. Arquivos
   non-game (user_overrides.example.yaml) sao ignorados no load.
+
+## ADR-022 - Geracao balanceada simetrica (nao quebra equiprobabilidade)
+- **Contexto**: "Balancear" a carteira pode parecer heuristica preditiva proibida.
+- **Decisao**: RandomBalancedOptimizer balanceia a FREQUENCIA das dezenas na carteira de forma
+  SIMETRICA: embaralha (desempate aleatorio) e escolhe as dezenas menos usadas ate aqui. Nenhuma
+  dezena especifica e favorecida; so a representacao fica uniforme. Modo balanced=False da amostragem
+  uniforme pura. Ambos sem quente/frio/historico.
+- **Consequencia**: Reduz variancia de cobertura sem violar a regra fundamental nem prever sorteio.
+  Justica do modo puro validada por teste qui-quadrado.
