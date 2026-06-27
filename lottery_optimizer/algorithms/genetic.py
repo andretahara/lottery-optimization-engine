@@ -73,8 +73,9 @@ class GeneticOptimizer(BaseOptimizer):
             if len(kids) == n:
                 break
         universe = list(spec.number_universe())
-        size = len(list(pa)[0])
+        sizes_pool = [len(t) for t in pool]  # preserva tamanhos (suporta carteiras mistas)
         while len(kids) < n:
+            size = rng.choice(sizes_pool)  # tamanho de um jogo existente
             cand = tuple(sorted(rng.sample(universe, size)))
             if cand not in seen:
                 seen.add(cand)

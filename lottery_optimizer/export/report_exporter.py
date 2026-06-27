@@ -34,7 +34,8 @@ def render_report(rd: ReportData) -> str:
         f"Cobertura principal (K={rd.spec.draw_size}) - bruta: {rd.raw_main:,}  "
         f"unica: {rd.unique_main:,} ({rd.coverage_mode_used})",
         f"Probabilidade teorica do premio principal: {float(p_main):.3e}"
-        + (f"  (~1 em {float(one_in):,.0f})" if one_in else ""),
+        + (f"  (~1 em {float(one_in):,.0f})" if one_in else "")
+        + ("  [ESTIMADA - cobertura amostral]" if rd.coverage_mode_used == "sampled" else ""),
         f"Cobertura de pares: unica {rd.pair_cov.unique:,} / bruta {rd.pair_cov.raw:,} "
         f"(redundancia {rd.pair_cov.redundancy:,})",
         f"Cobertura de trincas: unica {rd.triple_cov.unique:,} / bruta {rd.triple_cov.raw:,}",

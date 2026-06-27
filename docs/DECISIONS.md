@@ -284,3 +284,22 @@ revertem antigas referenciam o ADR superado.
   benchmark.xlsx (+aba AvisoMatematico), benchmark_report.txt (com disclaimer e nota de validade),
   benchmark_score.png, benchmark_coverage.png.
 - **Consequencia**: Comparacao reproduzivel e honesta; score sozinho nao decide.
+
+## ADR-033 - Revisao de producao (2o engenheiro): findings + checklist
+- **Findings**:
+  - CRITICAL/HIGH: nenhum. Invariantes de orcamento/duplicata/universo/disclaimer/premio-unico ja
+    travados por auditoria.
+  - MEDIUM-1 (CORRIGIDO): relatorio nao distinguia probabilidade exata de estimada. Agora a linha da
+    probabilidade recebe "[ESTIMADA - cobertura amostral]" quando coverage_mode_used == sampled.
+  - MEDIUM-2 (CORRIGIDO): `GeneticOptimizer._crossover` preenchia faltas com tamanho fixo
+    `len(pa[0])` - quebrava carteiras de tamanhos mistos. Agora amostra o tamanho da distribuicao
+    dos pais (suporta mixed_ticket_sizes).
+  - MEDIUM-3 (VERIFICADO): `p_tier_portfolio_approx` (cota de Boole) e LIMITE SUPERIOR e pode
+    inflar - teste garante que e >= prob single e NUNCA aparece no relatorio ao usuario.
+  - LOW (documentado): nomes duplicados `total_outcomes`/`total_combinations` e
+    `simple_combinations`/`equivalent_simple_games` (mesmo C(.,.)) - mantidos por compat, sem risco.
+- **Checklist de producao**: [x] testes verdes (146) [x] ruff limpo [x] sem preco oficial inventado
+  (null por default + guarda) [x] disclaimer em CLI/relatorio/Excel [x] relatorio nao promete
+  previsao/garantia [x] estimativa nunca silenciosa [x] otimizadores preservam orcamento e nao
+  duplicam [x] engine generica (teste anti-hardcode) [x] reprodutivel por seed [x] CSV/Excel abrem.
+- **Consequencia**: PR aprovavel; nenhum finding critical/high pendente.
