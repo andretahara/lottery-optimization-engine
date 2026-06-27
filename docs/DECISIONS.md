@@ -273,3 +273,14 @@ revertem antigas referenciam o ADR superado.
   5. `get_logger` propaga (caplog testavel; root sem handler nao duplica).
 - **Consequencia**: Suite 100s -> 11.5s, mesmos resultados. Estimativa sempre logada (auditavel).
   Modo conservador protege jogos grandes (Lotomania) sem quebrar a matematica.
+
+## ADR-032 - Benchmark: vencedor so entre carteiras validas, com memoria e exports
+- **Contexto**: Comparar geradores e otimizadores de forma justa, sem premiar carteira invalida.
+- **Decisao**: `run_benchmark` roda os 8 algoritmos (random/balanced_random/greedy_coverage +
+  local_search/SA/genetic/grasp/hybrid) na mesma seed/orcamento/GameSpec, media sobre seeds.
+  Metricas: score, melhoria, cobertura principal/pares/trincas/quadras, redundancia, distancia
+  media, tempo e pico de memoria (profile_block). Vencedor = maior score SO entre carteiras
+  validas (orcamento/duplicata/universo/tamanho); invalidas descartadas. Exports: benchmark.csv,
+  benchmark.xlsx (+aba AvisoMatematico), benchmark_report.txt (com disclaimer e nota de validade),
+  benchmark_score.png, benchmark_coverage.png.
+- **Consequencia**: Comparacao reproduzivel e honesta; score sozinho nao decide.
