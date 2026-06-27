@@ -195,3 +195,12 @@ revertem antigas referenciam o ADR superado.
 - **Consequencia**: 5 otimizadores (LocalSearch/SA/Genetic/GRASP/Hybrid) com contrato unico.
   Custo: score com cobertura exata e caro (replace-worst chama scorer N vezes); perf sera tratada
   no bloco de auditoria de engenharia (cache/sampled/limites).
+
+## ADR-026 - Export: assembler ReportData unico para TXT/Excel/graficos
+- **Contexto**: TXT, Excel e graficos precisam das mesmas metricas; recalcular em cada um duplica.
+- **Decisao**: `export/report_data.build_report_data` monta um `ReportData` (cobertura modo auto,
+  frequencia, equilibrio, distancia, custo/saldo via cost_model, metadados algoritmo/seed/timestamp/
+  config-de-preco). TXT e Excel consomem esse objeto; graficos usam matplotlib (Agg, sem seaborn,
+  figura por grafico). CSV colunar com dezenas ordenadas. Disclaimer no TXT e na aba AvisoMatematico.
+- **Consequencia**: Uma fonte de verdade para o relatorio. Custo: cobertura no relatorio usa exact
+  (fallback sampled) - caro em jogos enormes, aceitavel para export pontual.
