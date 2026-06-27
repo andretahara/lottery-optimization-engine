@@ -235,3 +235,25 @@ revertem antigas referenciam o ADR superado.
   nao mencionam loteria especifica.
 - **Consequencia**: Zero duplicacao de logica; trocar de jogo = trocar game_id+pesos no YAML.
   Prova de que a engine e generica (N=80 K=5 vs N=60 K=6 sem mudar codigo).
+
+## ADR-030 - Auditoria matematica (sem features novas): invariantes travados
+- **Contexto**: Antes de seguir, auditar correcao de probabilidade/custo/carteira/metricas/
+  otimizadores/relatorios.
+- **Achados**:
+  1. Probabilidade: C(N,K) correto (Quina/Mega/Lotofacil); premio principal usa cobertura UNICA
+     (nao bruta); sem dupla contagem (dedup real); p_main <= 1 sempre. OK.
+  2. Custo: respeita price_table; estimativas marcadas (is_estimate); run real bloqueado sem preco
+     oficial; saldo correto. OK.
+  3. Carteira: duplicatas detectadas; dezena fora do universo e tamanho invalido rejeitados.
+     ACHADO (nao-bug): erro de `Ticket` sobe como `pydantic.ValidationError` (encapsula TicketError),
+     enquanto `Portfolio.add` sobe `TicketError` direto - inconsistencia de tipo de excecao. Caller
+     deve tratar ambos. Documentado; nao quebra invariante.
+  4. Metricas: cobertura/Jaccard/redundancia/frequencia ideal corretas. OK.
+  5. Otimizadores: orcamento preservado, sem duplicatas, GameSpec preservado, nunca pioram
+     (best>=initial) para os 5 otimizadores. OK.
+  6. Relatorios: contem disclaimer e "probabilidade teorica"; sem "garantia de premio"/"vai ganhar".
+     OK.
+- **Decisao**: travar tudo em `tests/test_audit_math.py` (15 testes). Nenhum bug critico de matematica.
+  Pendencia conhecida para o bloco de performance: `coverage_ratio` itera C(N,size) para contar o
+  total (lento no caminho do score dos otimizadores) - correto, mas caro.
+- **Consequencia**: Base matematica verificada e protegida contra regressao.
