@@ -1,0 +1,23 @@
+# Config de execucao - Quina de Sao Joao (orcamento R$ 19.140,00).
+# A engine NAO inventa preco oficial. Preencha price_table com o valor VIGENTE da aposta
+# simples da Quina (5 dezenas) verificado em https://loterias.caixa.gov.br e marque
+# price_status: official + official_price_last_checked. Enquanto unset/example, o script PARA.
+game_id: quina
+budget: 19140.00
+seed: 12345
+optimizer: hybrid
+initial_strategy: hybrid_initial
+iterations: 300
+output_dir: output/quina_sao_joao
+# foco principal: cobertura do premio principal; secundario: quadras/trincas/pares
+score_weights:
+  main_coverage: 0.50
+  intermediate_coverage: 0.30
+  diversity: 0.10
+  balance: 0.05
+  low_redundancy: 0.05
+# --- PRECO (responsabilidade do usuario) ---
+price_status: unset
+official_price_last_checked: null
+price_source_note: "Preencher com preco oficial vigente da Quina (loterias.caixa.gov.br)."
+price_table: null

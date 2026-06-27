@@ -38,6 +38,7 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 - [x] **Bloco O - Otimizadores**: BaseOptimizer + OptimizationResult + RuntimeConfig; LocalSearch/SimulatedAnnealing/Genetic/GRASP/Hybrid; movimentos (troca dezena/aposta/replace-worst); checkpoint; reprodutivel; coverage_mode auto. 102 testes.
 - [ ] **Bloco 6 - Export completo**: Excel (openpyxl) + charts (matplotlib); disclaimer em tudo.
 - [x] **Bloco CLI**: Typer+Rich, 9 comandos (list-games, inspect-game, validate-config, generate, optimize, report, export, compare, benchmark); aviso obrigatorio sempre, bloqueia preco exemplo, output/TS_GAME/, logs. 110 testes.
+- [x] **Bloco Ex1 - Quina de Sao Joao**: scripts/run_quina_sao_joao.py + configs/quina_sao_joao_budget_19140.yaml; valida preco (PARA se null/exemplo), decide simples/multipla pelo custo por combinacao equivalente, gera+otimiza+exporta. Sem preco inventado.
 - [ ] **Bloco 8 - Auditoria + performance**: stress Lotofacil/Lotomania, edge cases, auditoria anti-previsao.
 
 ## Proximo passo seguro

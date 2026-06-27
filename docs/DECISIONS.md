@@ -215,3 +215,13 @@ revertem antigas referenciam o ADR superado.
   optimize/report/export/compare/benchmark).
 - **Consequencia**: Fluxo completo testavel offline via CliRunner; orcamento monetario fica nos
   scripts de exemplo (que exigem preco oficial). Benchmark base em `benchmark.py` (bloco Benchmark enriquece).
+
+## ADR-028 - Exemplos operacionais com config de execucao separada da game spec
+- **Contexto**: Rodar um caso real (orcamento monetario) exige preco oficial + decisao de tamanho
+  de aposta, sem inventar preco e sem prender a engine a um jogo.
+- **Decisao**: Config de EXECUCAO em `configs/*.yaml` (game_id, budget, optimizer, score_weights,
+  output_dir + campos de preco como override). `scripts/run_quina_sao_joao.py` valida preco
+  (`assert_prices_usable`, PARA se null/exemplo sem flag), calcula num_tickets = budget // preco
+  simples, e demonstra que multiplas com custo/combinacao igual NAO aumentam eficiencia. Testes
+  usam preco FICTICIO marcado example (nunca como oficial).
+- **Consequencia**: Fluxo real reproduzivel e auditavel; preco continua responsabilidade do usuario.
