@@ -1,0 +1,22 @@
+# Config de execucao - Mega-Sena da Virada (orcamento configuravel).
+# NAO inventa preco oficial. Preencha price_table com o preco VIGENTE da aposta simples
+# (6 dezenas) verificado em loterias.caixa.gov.br e marque price_status: official.
+# Enquanto unset/example, o script PARA.
+game_id: mega-sena
+budget: 1000.00
+seed: 12345
+optimizer: hybrid
+initial_strategy: hybrid_initial
+iterations: 300
+output_dir: output/mega_sena_virada
+# foco principal: cobertura de combinacoes de 6 dezenas; secundario: quinas(5)/quadras(4)
+score_weights:
+  main_coverage: 0.55
+  intermediate_coverage: 0.30
+  diversity: 0.08
+  balance: 0.04
+  low_redundancy: 0.03
+price_status: unset
+official_price_last_checked: null
+price_source_note: "Preencher com preco oficial vigente da Mega-Sena (loterias.caixa.gov.br)."
+price_table: null

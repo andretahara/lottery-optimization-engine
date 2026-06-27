@@ -225,3 +225,13 @@ revertem antigas referenciam o ADR superado.
   simples, e demonstra que multiplas com custo/combinacao igual NAO aumentam eficiencia. Testes
   usam preco FICTICIO marcado example (nunca como oficial).
 - **Consequencia**: Fluxo real reproduzivel e auditavel; preco continua responsabilidade do usuario.
+
+## ADR-029 - Runner generico unico para os scripts de exemplo (anti-duplicacao)
+- **Contexto**: Quina de Sao Joao e Mega da Virada compartilham 100% do fluxo (carregar spec,
+  validar preco, decidir tamanho, gerar, otimizar, exportar). Duplicar seria divida tecnica.
+- **Decisao**: `lottery_optimizer/runner.run_from_config(config, ...)` concentra o fluxo, parametrizado
+  por game_id e pesos. Os scripts `run_quina_sao_joao.py` e `run_mega_sena_virada.py` viram wrappers
+  finos (config default + main). Teste anti-hardcode garante que algorithms/generators/core/metrics
+  nao mencionam loteria especifica.
+- **Consequencia**: Zero duplicacao de logica; trocar de jogo = trocar game_id+pesos no YAML.
+  Prova de que a engine e generica (N=80 K=5 vs N=60 K=6 sem mudar codigo).
