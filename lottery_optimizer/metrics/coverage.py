@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..core.combinations import iter_combinations, k_subsets
+from ..core.combinations import k_subsets, n_choose_k
 from ..core.coverage import CombinationCoverage
 from ..core.game import GameSpec
 from ..core.portfolio import Portfolio
@@ -19,8 +19,7 @@ def covered_subsets(portfolio: Portfolio, size: int) -> set[tuple[int, ...]]:
 
 def coverage_ratio(portfolio: Portfolio, spec: GameSpec, size: int) -> float:
     """Fracao dos subconjuntos de `size` dezenas do universo cobertos pela carteira."""
-    universe = list(spec.number_universe())
-    total = sum(1 for _ in iter_combinations(universe, size))
+    total = n_choose_k(spec.pool, size)
     if total == 0:
         return 0.0
     return len(covered_subsets(portfolio, size)) / total
@@ -38,9 +37,10 @@ class SubsetCoverage:
 class CoverageMetrics:
     """Cobertura unica/bruta/redundancia para subconjuntos de qualquer tamanho."""
 
-    def __init__(self, spec: GameSpec):
+    def __init__(self, spec: GameSpec, exact_cap: int | None = None):
         self.spec = spec
-        self._cov = CombinationCoverage(spec)
+        self._cov = (CombinationCoverage(spec, exact_cap=exact_cap)
+                     if exact_cap is not None else CombinationCoverage(spec))
 
     def at(self, portfolio: Portfolio, size: int, *, mode: str = "exact", **kw) -> SubsetCoverage:
         raw = self._cov.raw_count(portfolio, size)

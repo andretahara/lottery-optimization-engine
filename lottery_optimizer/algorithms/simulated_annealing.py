@@ -14,7 +14,7 @@ class SimulatedAnnealingOptimizer(BaseOptimizer):
 
     def optimize(self, initial_portfolio, game_spec, budget, score_config, runtime_config, seed):
         rc: RuntimeConfig = runtime_config
-        scorer = make_scorer(score_config, game_spec, rc.coverage_mode)
+        scorer = make_scorer(score_config, game_spec, rc.coverage_mode, rc.max_memory_mode)
         rng = SeededRng(seed)
         start = self._now()
         initial_score = scorer(initial_portfolio)

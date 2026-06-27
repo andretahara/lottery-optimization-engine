@@ -20,5 +20,5 @@ def get_logger(name: str = "lottery_optimizer", level: int = logging.INFO) -> lo
         fmt = "%(asctime)s %(levelname)s %(name)s: %(message)s"
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
-    logger.propagate = False
+    logger.propagate = True  # permite captura por caplog; root sem handler nao duplica
     return logger

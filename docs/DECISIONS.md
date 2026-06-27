@@ -257,3 +257,19 @@ revertem antigas referenciam o ADR superado.
   Pendencia conhecida para o bloco de performance: `coverage_ratio` itera C(N,size) para contar o
   total (lento no caminho do score dos otimizadores) - correto, mas caro.
 - **Consequencia**: Base matematica verificada e protegida contra regressao.
+
+## ADR-031 - Auditoria de engenharia/performance: memoizacao + modos de memoria + logs
+- **Contexto**: Otimizadores eram lentos (~100s na suite). Causa: `coverage_ratio` ITERAVA C(N,size)
+  para contar o total e o scorer recomputava cobertura exata a cada candidato.
+- **Decisao** (sem sacrificar correcao):
+  1. `coverage_ratio`: total via `n_choose_k(pool, size)` (formula, nao iteracao).
+  2. `make_scorer`: memoiza por assinatura da carteira (frozenset de jogos) - mesma carteira nao
+     reavalia cobertura. Resultado identico, so mais rapido.
+  3. `CombinationCoverage(exact_cap)` + `count_unique_auto`: exato dentro da trava; senao ESTIMATIVA
+     amostral COM LOG (nunca silenciosa). `max_memory_mode='conservative'` baixa a trava (100k) p/
+     cair em amostral mais cedo e evitar estouro de memoria. Plumbado por RuntimeConfig ->
+     make_scorer -> PortfolioScore -> CoverageMetrics. CLI `--max-memory-mode`.
+  4. `utils/profiling.profile_block`: tempo + pico de memoria (tracemalloc).
+  5. `get_logger` propaga (caplog testavel; root sem handler nao duplica).
+- **Consequencia**: Suite 100s -> 11.5s, mesmos resultados. Estimativa sempre logada (auditavel).
+  Modo conservador protege jogos grandes (Lotomania) sem quebrar a matematica.

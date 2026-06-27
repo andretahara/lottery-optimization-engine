@@ -13,7 +13,7 @@ class GRASPOptimizer(BaseOptimizer):
 
     def optimize(self, initial_portfolio, game_spec, budget, score_config, runtime_config, seed):
         rc: RuntimeConfig = runtime_config
-        scorer = make_scorer(score_config, game_spec, rc.coverage_mode)
+        scorer = make_scorer(score_config, game_spec, rc.coverage_mode, rc.max_memory_mode)
         start = self._now()
         initial_score = scorer(initial_portfolio)
         n = len(initial_portfolio)
@@ -28,7 +28,7 @@ class GRASPOptimizer(BaseOptimizer):
             # construcao gulosa randomizada (seed por rodada -> reprodutivel)
             built = GreedyCoverageGenerator().generate(game_spec, n, constraints, seed + r + 1)
             local_rc = RuntimeConfig(max_iterations=rc.max_iterations // max(1, rc.grasp_rounds),
-                                     restarts=1, coverage_mode=rc.coverage_mode)
+                                     restarts=1, coverage_mode=rc.coverage_mode, max_memory_mode=rc.max_memory_mode)
             res = ls.optimize(built, game_spec, budget, score_config, local_rc, seed + r + 1)
             total_iter += res.iterations
             history.extend(res.score_history)

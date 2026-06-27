@@ -13,7 +13,7 @@ class HybridOptimizer(BaseOptimizer):
 
     def optimize(self, initial_portfolio, game_spec, budget, score_config, runtime_config, seed):
         rc: RuntimeConfig = runtime_config
-        scorer = make_scorer(score_config, game_spec, rc.coverage_mode)
+        scorer = make_scorer(score_config, game_spec, rc.coverage_mode, rc.max_memory_mode)
         start = self._now()
         initial_score = scorer(initial_portfolio)
         third = max(20, rc.max_iterations // 3)
@@ -21,14 +21,14 @@ class HybridOptimizer(BaseOptimizer):
         g = GRASPOptimizer().optimize(
             initial_portfolio, game_spec, budget, score_config,
             RuntimeConfig(max_iterations=third, grasp_rounds=rc.grasp_rounds,
-                          coverage_mode=rc.coverage_mode), seed)
+                          coverage_mode=rc.coverage_mode, max_memory_mode=rc.max_memory_mode), seed)
         sa = SimulatedAnnealingOptimizer().optimize(
             g.best_portfolio, game_spec, budget, score_config,
             RuntimeConfig(max_iterations=third, temp_initial=rc.temp_initial, cooling=rc.cooling,
-                          coverage_mode=rc.coverage_mode), seed + 1)
+                          coverage_mode=rc.coverage_mode, max_memory_mode=rc.max_memory_mode), seed + 1)
         ls = LocalSearchOptimizer().optimize(
             sa.best_portfolio, game_spec, budget, score_config,
-            RuntimeConfig(max_iterations=third, restarts=2, coverage_mode=rc.coverage_mode), seed + 2)
+            RuntimeConfig(max_iterations=third, restarts=2, coverage_mode=rc.coverage_mode, max_memory_mode=rc.max_memory_mode), seed + 2)
 
         stages = [g, sa, ls]
         best = max(stages, key=lambda r: r.best_score)

@@ -83,9 +83,11 @@ def load_weights(path: str | Path) -> dict:
 class PortfolioScore:
     """Funcao-objetivo parametrizavel. Pesos via dict ou arquivo (YAML/JSON)."""
 
-    def __init__(self, weights: dict | None = None, penalties: dict | None = None):
+    def __init__(self, weights: dict | None = None, penalties: dict | None = None,
+                 max_memory_mode: str = "normal"):
         self.weights = {**DEFAULT_SCORE_WEIGHTS, **(weights or {})}
         self.penalties = {**DEFAULT_SCORE_PENALTIES, **(penalties or {})}
+        self.max_memory_mode = max_memory_mode
 
     @classmethod
     def from_file(cls, path: str | Path) -> "PortfolioScore":
@@ -101,13 +103,18 @@ class PortfolioScore:
         coverage_mode='auto' tenta exact e cai para sampled se a cobertura exata estourar a
         trava de memoria (jogos grandes); 'exact'/'sampled' forcam o modo.
         """
+        from ..core.coverage import CONSERVATIVE_EXACT_CAP
         from ..core.validation import SpecError
+        from ..utils.logging import get_logger
 
-        cov = CoverageMetrics(spec)
+        cap = CONSERVATIVE_EXACT_CAP if self.max_memory_mode == "conservative" else None
+        cov = CoverageMetrics(spec, exact_cap=cap)
         if coverage_mode == "auto":
             try:
                 main = cov.main(portfolio, mode="exact")
             except SpecError:
+                get_logger("lottery_optimizer.scoring").warning(
+                    "score: cobertura principal exata estourou; usando ESTIMATIVA amostral")
                 main = cov.main(portfolio, mode="sampled")
         else:
             main = cov.main(portfolio, mode=coverage_mode)

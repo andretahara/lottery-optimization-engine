@@ -27,6 +27,7 @@ class RuntimeConfig:
     checkpoint_path: str | None = None
     checkpoint_every: int = 100
     coverage_mode: str = "auto"
+    max_memory_mode: str = "normal"  # normal | conservative
     # genetic
     population: int = 20
     generations: int = 40
@@ -54,16 +55,29 @@ class OptimizationResult:
     logs: list[str] = field(default_factory=list)
 
 
-def make_scorer(score_config, spec: GameSpec, coverage_mode: str) -> Callable[[Portfolio], float]:
-    """Normaliza score_config (PortfolioScore | dict de pesos | None) numa funcao carteira->float."""
+def make_scorer(score_config, spec: GameSpec, coverage_mode: str,
+                max_memory_mode: str = "normal") -> Callable[[Portfolio], float]:
+    """Normaliza score_config (PortfolioScore | dict | None) numa funcao carteira->float.
+
+    Memoiza por assinatura da carteira: otimizadores reavaliam a mesma carteira varias vezes
+    (ex.: replace-worst) - o cache evita recomputar a cobertura (caro). Nao altera resultado.
+    """
     if isinstance(score_config, PortfolioScore):
         ps = score_config
     elif isinstance(score_config, dict):
         ps = PortfolioScore(weights=score_config.get("weights", score_config),
-                            penalties=score_config.get("penalties"))
+                            penalties=score_config.get("penalties"), max_memory_mode=max_memory_mode)
     else:
-        ps = PortfolioScore()
-    return lambda p: ps.score(p, spec, coverage_mode=coverage_mode)
+        ps = PortfolioScore(max_memory_mode=max_memory_mode)
+    cache: dict = {}
+
+    def scorer(p: Portfolio) -> float:
+        key = frozenset(t.numbers for t in p)
+        if key not in cache:
+            cache[key] = ps.score(p, spec, coverage_mode=coverage_mode)
+        return cache[key]
+
+    return scorer
 
 
 # ---------- movimentos de vizinhanca (preservam orcamento e validade) ----------

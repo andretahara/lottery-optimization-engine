@@ -148,7 +148,7 @@ def optimize(
     game: str, budget: int = 10, optimizer: str = "hybrid", runtime_seconds: float = 0.0,
     iterations: int = 200, seed: int = 12345, score_config: str = "", ticket_size: int = 0,
     mixed_ticket_sizes: str = "", output_dir: str = "", checkpoint: str = "", resume: str = "",
-    allow_example_prices: bool = False,
+    max_memory_mode: str = "normal", allow_example_prices: bool = False,
 ) -> None:
     """Gera carteira inicial e otimiza."""
     _notice()
@@ -162,7 +162,8 @@ def optimize(
     sc = PortfolioScore.from_file(score_config) if score_config else None
     rc = RuntimeConfig(max_iterations=iterations,
                        runtime_seconds=runtime_seconds or None,
-                       checkpoint_path=checkpoint or None)
+                       checkpoint_path=checkpoint or None,
+                       max_memory_mode=max_memory_mode)
     res = OPTIMIZERS[optimizer]().optimize(initial, spec, budget, sc, rc, seed)
     run_dir = _run_dir(output_dir, game)
     _export_all(res.best_portfolio, spec, run_dir, algorithm=optimizer, seed=seed,
