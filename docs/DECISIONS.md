@@ -9,8 +9,8 @@ revertem antigas referenciam o ADR superado.
 - **Contexto**: Engine de combinatoria pesada + estatistica de carteira + export.
 - **Decisao**: Python 3.12. `itertools`/`random` no nucleo, `numpy` p/ metricas vetoriais.
 - **Consequencia**: Iteracao rapida e libs cientificas fortes. Performance bruta inferior
-  a Rust em loterias enormes; mitigar com algoritmos (cobertura greedy) e numpy. Cliente externo
-  consome via API futura se necessario.
+  a Rust em loterias enormes; mitigar com algoritmos (cobertura greedy) e numpy. Um cliente externo
+  podera consumir a engine via API no futuro, se necessario.
 
 ## ADR-002 - Interface: biblioteca + CLI fino
 - **Contexto**: Precisa ser reutilizavel e testavel sem acoplar a web.
