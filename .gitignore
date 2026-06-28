@@ -32,3 +32,4 @@ checkpoints/
 
 # Saidas de execucao/dry-run
 output/
+coverage.xml

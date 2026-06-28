@@ -1,6 +1,6 @@
 # Lottery Optimization Engine
 
-[![CI](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml) ![coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
+[![CI](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml) ![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/andretahara/lottery-optimization-engine/badges/coverage.json)
 
 Engine generica para loterias combinatorias brasileiras. Otimiza **cobertura
 combinatoria** e **qualidade de carteira** (diversidade, baixa sobreposicao, balanco,
@@ -99,7 +99,7 @@ que os valores nao sao oficiais. Precos oficiais (ex.: Quina) rodam sem a flag.
 
 Repositorio publico. CI ao vivo via GitHub Actions
 (`.github/workflows/ci.yml`: ruff + pytest a cada push) - o badge de CI acima reflete
-o status do ultimo run na `main`. Suite atual: 158 testes, cobertura 95%.
+o status do ultimo run na `main`. Suite atual: 158 testes; o badge de cobertura e atualizado pelo CI a cada push.
 Detalhe de progresso em `docs/ROADMAP.md`.
 
 ## Contributing

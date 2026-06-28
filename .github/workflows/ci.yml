@@ -9,6 +9,8 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
@@ -21,4 +23,21 @@ jobs:
       - name: Lint
         run: ruff check lottery_optimizer tests scripts
       - name: Tests
-        run: pytest -q
+        run: pytest -q --cov=lottery_optimizer --cov-report=xml
+      - name: Coverage badge (push to badges branch)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pct=$(python -c "import xml.etree.ElementTree as ET; r=ET.parse('coverage.xml').getroot(); print(round(float(r.get('line-rate'))*100))")
+          color=$(python -c "p=$pct; print('brightgreen' if p>=90 else 'green' if p>=75 else 'yellowgreen' if p>=60 else 'yellow' if p>=40 else 'red')")
+          echo "Coverage medida: ${pct}% (${color})"
+          printf '{"schemaVersion":1,"label":"coverage","message":"%s%%","color":"%s"}\n' "$pct" "$color" > coverage.json
+          tmp=$(mktemp -d); cp coverage.json "$tmp/"; cd "$tmp"
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b badges
+          git add coverage.json
+          git commit -q -m "coverage badge: ${pct}%"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" badges
