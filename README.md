@@ -22,6 +22,79 @@ regra fundamental em `CLAUDE.md` e os ADRs em `docs/DECISIONS.md`.
 Quina, Quina de Sao Joao, Mega-Sena, Mega-Sena da Virada, Lotofacil, Lotomania,
 Timemania, Dupla Sena, e outras configuraveis.
 
+## Usage
+
+Instalacao (modo editavel, a partir do clone):
+
+```bash
+git clone https://github.com/andretahara/lottery-optimization-engine.git
+cd lottery-optimization-engine
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+```
+
+O executavel e `lottery-optimizer` (entrypoint declarado no `pyproject.toml`).
+Todos os comandos abaixo foram executados de verdade; os trechos de saida sao reais
+(recortados).
+
+```bash
+# Lista todos os comandos disponiveis
+lottery-optimizer --help
+```
+
+```bash
+# Lista as loterias configuradas (repare na coluna "preco": unset vs official)
+lottery-optimizer list-games
+```
+
+```text
+│ mega-sena  │ Mega-Sena  │ 1-60     │ 6       │ 6-15     │ unset    │
+│ quina      │ Quina      │ 1-80     │ 5       │ 5-15     │ official │
+```
+
+```bash
+# Mostra a config de um jogo (universo, K, C(N,K), status de preco)
+lottery-optimizer inspect-game mega-sena
+```
+
+```bash
+# Valida a config de um jogo
+lottery-optimizer validate-config quina
+# -> OK 'quina' valido.
+```
+
+```bash
+# Gera uma carteira. budget = NUMERO DE APOSTAS. mega-sena nao tem preco oficial
+# (price_status=unset), entao roda em modo CONTAGEM: sem custo monetario, sem aposta
+# real. Artefatos (CSV/Excel/TXT/PNG) vao para output/ (gitignored).
+lottery-optimizer generate mega-sena --budget 5 --seed 42 --output-dir output/exemplo
+# -> Gerada carteira de 5 apostas em output/exemplo/<timestamp>_mega-sena
+```
+
+```bash
+# Otimiza a carteira (refina cobertura/score; nunca piora o inicial)
+lottery-optimizer optimize mega-sena --budget 5 --seed 42 --iterations 50 --output-dir output/exemplo_opt
+# -> Otimizada score 0.2216 -> 0.2545 (+0.0329) em output/exemplo_opt/<timestamp>_mega-sena
+```
+
+```bash
+# Relatorio TXT de uma carteira existente (ordem dos argumentos: GAME depois CSV)
+lottery-optimizer report mega-sena output/exemplo/<timestamp>_mega-sena/jogos.csv
+```
+
+```text
+Apostas: 5    Tamanhos: [6]
+Combinacoes simples equivalentes: 5
+```
+
+**Precos e a flag `--allow-example-prices`.** A engine NAO preve sorteios: maximiza
+cobertura combinatoria e reduz redundancia, e toda combinacao continua tendo a mesma
+probabilidade individual. Precos oficiais sao responsabilidade do usuario. Jogos sem
+preco (`price_status=unset`) rodam em modo contagem, como nos exemplos acima. Se um jogo
+for marcado com precos de EXEMPLO (ilustrativos, nao oficiais), a guarda BLOQUEIA a
+execucao a menos que voce passe `--allow-example-prices`, assumindo de forma explicita
+que os valores nao sao oficiais. Precos oficiais (ex.: Quina) rodam sem a flag.
+
 ## Status
 
 Repositorio publico. CI ao vivo via GitHub Actions
