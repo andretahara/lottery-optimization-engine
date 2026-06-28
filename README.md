@@ -102,6 +102,25 @@ Repositorio publico. CI ao vivo via GitHub Actions
 o status do ultimo run na `main`. Suite atual: 158 testes, cobertura 95%.
 Detalhe de progresso em `docs/ROADMAP.md`.
 
+## Contributing
+
+Projeto pessoal, aberto ao publico. Forks sao bem-vindos; issues e pull requests
+tambem - mas como e mantido por uma pessoa so, nao ha garantia de tempo de resposta
+nem de manutencao ativa.
+
+Ambiente de desenvolvimento (comandos reais, espelham o `Makefile`):
+
+```bash
+pip install -e ".[dev]"                        # engine + ferramentas de dev (make install)
+pytest                                         # roda a suite de testes      (make test)
+ruff check lottery_optimizer tests scripts     # lint                        (make lint)
+```
+
+Mudancas devem manter a suite verde e o ruff limpo - mesmo portao do CI
+(`.github/workflows/ci.yml`). E precisam preservar o principio da engine: ela otimiza
+cobertura combinatoria e reduz redundancia, e NUNCA preve sorteios - nada que sugira
+aumento da chance individual de ganhar.
+
 ## Precos
 
 Precos oficiais nao sao inclusos. Configure os precos vigentes na spec da loteria antes
