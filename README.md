@@ -1,5 +1,7 @@
 # Lottery Optimization Engine
 
+[![CI](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml)
+
 Engine generica para loterias combinatorias brasileiras. Otimiza **cobertura
 combinatoria** e **qualidade de carteira** (diversidade, baixa sobreposicao, balanco,
 distancia media, aderencia ao orcamento). Trata cada loteria como configuracao, nunca
