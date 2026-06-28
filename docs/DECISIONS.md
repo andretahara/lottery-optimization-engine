@@ -303,3 +303,60 @@ revertem antigas referenciam o ADR superado.
   previsao/garantia [x] estimativa nunca silenciosa [x] otimizadores preservam orcamento e nao
   duplicam [x] engine generica (teste anti-hardcode) [x] reprodutivel por seed [x] CSV/Excel abrem.
 - **Consequencia**: PR aprovavel; nenhum finding critical/high pendente.
+
+## ADR-034 - Precos oficiais da Quina preenchidos + correcao de allowed_ticket_sizes (5 a 15)
+
+**Contexto.** O organizador (usuario) confirmou o preco vigente da Quina: aposta simples de
+5 dezenas = R$ 3,00; apostas multiplas seguem exatamente C(T,5) x 3,00 (6 dz = R$ 18; 7 dz =
+R$ 63; ... 15 dz = R$ 9.009). A config `games/configs/quina.yaml` estava com `price_table: null`,
+`price_status: unset` e `allowed_ticket_sizes: [5, 6, 7]` - este ultimo fruto de uma correcao
+anterior EQUIVOCADA que limitava a Quina a 7 dezenas.
+
+**Decisao.** (1) Preencher `price_table` para os tamanhos 5..15 com C(T,5) x R$ 3,00; marcar
+`price_status: official`, `official_price_last_checked: 2026-06-28`, `price_source_note` citando
+o organizador + conferencia na Caixa. A guarda `assert_prices_usable` passa a liberar execucao
+real da Quina SEM `--allow-example-prices`. (2) Corrigir `allowed_ticket_sizes` para
+`[5,6,7,8,9,10,11,12,13,14,15]`: a Quina oficial aceita de 5 a 15 dezenas (verificado em
+loterias.caixa.gov.br; C(15,5)=3003 combinacoes, 3003 x R$3 = R$ 9.009, batendo com o valor
+informado pelo organizador).
+
+**Consequencia.** Quina executavel de verdade. Os demais jogos seguem com preco nao preenchido
+(engine NUNCA inventa preco; ADR-006). A correcao de 7->15 dezenas e um conserto de fato oficial,
+nao mudanca de regra.
+
+## ADR-035 - CI (GitHub Actions) + teste de medicao de cobertura Quina (A engine-livre vs B enxuta)
+
+**Contexto.** (1) Falta de validacao automatica em ambiente limpo. (2) Pedido de teste real:
+gerar e MEDIR duas carteiras de R$ 19.140,00 para a Quina, mesma seed (30062026): A) engine
+escolhe o mix livremente maximizando cobertura do premio principal; B) distribuicao enxuta fixa
+do organizador (2x15 + 1x10 + 2x8 + 1x6 + 4x5 dezenas).
+
+**Decisao.** (1) Adicionado `.github/workflows/ci.yml` (ruff + pytest em push/PR na main, Python
+3.11) + badge no README. CI verde no primeiro run. (2) A engine, via `decide_ticket_sizing`,
+escolhe `all_simple` por conta propria: como o custo por combinacao simples equivalente e IGUAL
+entre tamanhos (preco = C(T,5) x base), apostas multiplas NAO aumentam a eficiencia do premio
+principal - apenas consolidam combinacoes (MATH_MODEL S5). Logo A = 6380 apostas simples,
+ja no TETO de cobertura distinta do principal (6380/6380 K-subsets unicos). O refinamento
+iterativo do hybrid nao pode superar o teto e o termo de diversidade O(n^2) inviabiliza 300
+iteracoes em 6380 apostas; A e medida diretamente. Distancia de A reportada como AMOSTRAL
+(200k pares), sinalizada; demais metricas exatas. B medida 100% exata.
+
+**Resultado medido (ambas R$ 19.140,00, saldo 0, preco oficial nao-estimado, 6380 combinacoes
+simples equivalentes, 6380 K-subsets unicos, p_main = 2.654e-04 IDENTICA, redundancia 0):**
+
+| metrica | A engine-livre (6380 apostas) | B enxuta fixa (10 apostas) |
+|---|---|---|
+| cobertura principal unica | 6380 (teto) | 6380 (teto) |
+| pares cobertos | 3160 (100%) | 361 (11,42%) |
+| trincas cobertas | 47312 (57,59%) | 1202 (1,46%) |
+| quadras cobertas | 31651 (2,00%) | 3115 (0,20%) |
+| distancia media (Jaccard) | 0,964 (amostral) | 0,966 (exata) |
+| sobreposicao media / max | n/d (amostral) | 0,53 / 2 |
+
+**Consequencia.** Mesmo orcamento => mesma cobertura do premio principal (nenhuma das duas
+aumenta a chance individual de cravar a quina). A diferenca e estrutural nas FAIXAS SECUNDARIAS:
+A (espalhada) cobre 100% dos pares e ~58% das trincas; B (concentrada) entrega compactacao
+operacional (10 apostas fisicas vs 6380) ao custo de cobertura secundaria muito menor.
+Artefatos em `output/quina_sao_joao/{A_engine_livre,B_distribuicao_enxuta_fixa}/`. Os 11 itens
+de prontidao foram cristalizados em `tests/test_full_verification.py` (ADR implicito da etapa
+de verificacao).

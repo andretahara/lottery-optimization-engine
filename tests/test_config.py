@@ -15,8 +15,12 @@ def test_load_all_yaml():
     assert set(reg.available()) == EXPECTED
     for gid in reg.available():
         s = reg.get(gid)
-        assert s.price_table is None
-        assert s.price_status == "unset"
+        if gid == "quina":  # precos oficiais preenchidos (ADR-034)
+            assert s.price_status == "official"
+            assert s.price_table is not None
+        else:
+            assert s.price_table is None
+            assert s.price_status == "unset"
 
 
 def test_ignores_override_example_file():

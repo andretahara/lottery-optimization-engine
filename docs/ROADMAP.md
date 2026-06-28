@@ -43,6 +43,20 @@ openpyxl/matplotlib/typer/rich; accel opcional (scipy/ortools/numba).
 
 ## Status
 
-TODOS os blocos cobertos (Fundacao -> Runbook). 149 testes verdes, ruff limpo. Engine generica,
-matematicamente auditada, performance otimizada (suite ~20s), sem preco oficial inventado.
-Pendencia operacional unica: usuario preencher precos oficiais vigentes antes de aposta real.
+TODOS os blocos cobertos (Fundacao -> Runbook). 158 testes verdes, ruff limpo. Engine generica,
+matematicamente auditada, performance otimizada (suite ~19s), sem preco oficial inventado.
+
+Pos-conclusao:
+- [x] **Verificacao de prontidao (11 itens)** cristalizada em `tests/test_full_verification.py`
+      (geracao -> CSV/Excel/TXT/PNG -> sem duplicatas -> orcamento -> p_main=K-subsets/C(N,K)
+      -> reprodutibilidade por seed). Repo PUSHED (origin/main).
+- [x] **CI GitHub Actions** (`.github/workflows/ci.yml`: ruff + pytest) + badge no README; CI verde.
+- [x] **Quina com precos OFICIAIS** preenchidos (organizador + Caixa): 5..15 dezenas,
+      simples R$ 3,00, multiplas C(T,5) x 3,00; guarda libera execucao real (ADR-034).
+- [x] **Teste de medicao de cobertura Quina** R$ 19.140 (seed 30062026): A engine-livre
+      (6380 simples) vs B enxuta fixa (10 apostas). Mesma cobertura do principal (p_main
+      identica); A cobre 100% dos pares / B compacta operacionalmente. Artefatos em
+      `output/quina_sao_joao/`. Detalhe e quadro em ADR-035.
+
+Pendencia operacional: usuario preencher precos oficiais dos DEMAIS jogos antes de aposta real
+(engine nunca inventa). Push da Frente 2 (Quina) pendente de pedido explicito do usuario.

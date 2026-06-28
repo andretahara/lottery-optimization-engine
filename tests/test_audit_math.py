@@ -67,7 +67,7 @@ def test_cost_respects_table_and_marks_estimates():
 
 def test_real_run_blocked_without_official_price():
     with pytest.raises(PriceError):
-        assert_prices_usable(registry.get("quina"))         # unset -> bloqueia
+        assert_prices_usable(registry.get("mega-sena"))     # unset -> bloqueia (quina virou official, ADR-034)
 
 
 # ===== 3. CARTEIRA =====

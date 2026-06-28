@@ -50,7 +50,7 @@ def test_registry_six_games_and_params():
     assert set(registry.available()) == EXPECTED
     expect = {
         "mega-sena": (60, 6, 6, 15),
-        "quina": (80, 5, 5, 7),
+        "quina": (80, 5, 5, 15),
         "lotofacil": (25, 15, 15, 18),
         "lotomania": (100, 20, 50, 50),
         "timemania": (80, 7, 10, 10),
@@ -61,7 +61,11 @@ def test_registry_six_games_and_params():
         assert (s.pool, s.draw_size, s.min_ticket_size, s.max_ticket_size) == (pool, draw, mn, mx)
     assert registry.get("lotomania").universe_min == 0
     for gid in registry.available():
-        assert registry.get(gid).price_table is None
+        # quina tem precos oficiais preenchidos (ADR-034); demais permanecem None
+        if gid == "quina":
+            assert registry.get(gid).price_table is not None
+        else:
+            assert registry.get(gid).price_table is None
 
 
 def test_unknown_game():
