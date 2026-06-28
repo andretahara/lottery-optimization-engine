@@ -1,6 +1,6 @@
 # Lottery Optimization Engine
 
-[![CI](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/andretahara/lottery-optimization-engine/actions/workflows/ci.yml)
+![tests](https://img.shields.io/badge/tests-158%20passing-brightgreen) ![coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 
 Engine generica para loterias combinatorias brasileiras. Otimiza **cobertura
 combinatoria** e **qualidade de carteira** (diversidade, baixa sobreposicao, balanco,
@@ -24,7 +24,10 @@ Timemania, Dupla Sena, e outras configuraveis.
 
 ## Status
 
-Em construcao por fatias verticais. Ver `docs/ROADMAP.md`.
+Testes passam localmente (158 verdes, cobertura 95%) e no CI interno
+(`.github/workflows/ci.yml`: ruff + pytest a cada push). O repositorio e PRIVADO,
+por isso nao ha badge dinamico publico do GitHub Actions - os badges acima sao
+estaticos e refletem a suite atual. Detalhe de progresso em `docs/ROADMAP.md`.
 
 ## Precos
 
